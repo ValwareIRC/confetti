@@ -1,0 +1,867 @@
+/* Confetti — Console layout.
+   Two themes over one renderer: density and palette are separate axes, so
+   Cream and Console are a token swap rather than two designs. */
+
+/* ---------------- Console (dark) ---------------- */
+:root, :root[data-theme="console"]{
+  --bg:#14161A; --pane:#171A1F; --raised:#1B1E24; --sunk:#0F1115;
+  --ink:#E4E7EC; --ink2:#98A2B3; --ink3:#5C6675;
+  --line:#2A2F38; --line2:#39404B;
+  --sel:#243044; --selink:#CFE3FF;
+  --accent:#C4B5FD; --accent2:#8B7BC8;
+  --ok:#7DD3A0; --warn:#E3BC6B; --bad:#E89A85;
+  --hover:rgba(255,255,255,.035);
+
+  --c-identity:#F0A85C; --c-in:#8FD37A; --c-staff:#B79BEE; --c-servers:#7BC4E8;
+  --c-order:#EC8894; --c-rules:#DFC055; --c-extras:#A3ACC2;
+}
+/* ---------------- Cream (light) ---------------- */
+:root[data-theme="cream"]{
+  --bg:#F6F1E7; --pane:#FDFAF3; --raised:#FFFFFF; --sunk:#EDE5D4;
+  --ink:#3A322A; --ink2:#7A6E60; --ink3:#A89B8A;
+  --line:#E3D9C7; --line2:#D0C2A9;
+  --sel:#EFE6FA; --selink:#4A3A6B;
+  --accent:#7B5EA7; --accent2:#B49FDA;
+  --ok:#5E9E4E; --warn:#B5851F; --bad:#C4634F;
+  --hover:rgba(0,0,0,.035);
+
+  --c-identity:#D08432; --c-in:#5F9E4C; --c-staff:#8163C4; --c-servers:#3E93BD;
+  --c-order:#C85D6C; --c-rules:#B08F1F; --c-extras:#6C7690;
+}
+
+:root{
+  --ui:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,sans-serif;
+  --mono:"Cascadia Mono","Consolas",ui-monospace,monospace;
+  --row:23px;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:12.5px/1.45 var(--ui);
+  overflow:hidden;user-select:none;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+.spacer{flex:1}
+.mono{font-family:var(--mono)}
+
+.app{height:100%;display:grid;grid-template-rows:auto auto 1fr auto}
+
+/* ---------------- top bar ---------------- */
+.top{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--pane);
+  border-bottom:1px solid var(--line)}
+.brand{font-weight:700;letter-spacing:-.01em;padding-right:4px}
+.cmd{flex:1;display:flex;align-items:center;gap:8px;background:var(--sunk);
+  border:1px solid var(--line);border-radius:7px;padding:3px 9px;max-width:560px}
+.cmd .prompt{color:var(--ok);font-family:var(--mono)}
+.cmd input{flex:1;background:none;border:0;outline:none;font-family:var(--mono);font-size:11.5px;
+  user-select:text;min-width:0}
+.cmd input::placeholder{color:var(--ink3)}
+.cmd:focus-within{border-color:var(--accent2)}
+.kbd{font-family:var(--mono);font-size:9.5px;color:var(--ink3);border:1px solid var(--line2);
+  border-radius:4px;padding:0 5px;flex:none}
+.btn{padding:4px 11px;border-radius:7px;border:1px solid var(--line2);background:var(--raised);
+  font-weight:600;font-size:11.5px;white-space:nowrap}
+.btn:hover:not(:disabled){border-color:var(--accent2)}
+.btn:focus-visible{outline:2px solid var(--accent2);outline-offset:1px}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.go{background:var(--accent);border-color:var(--accent);color:#1A1420}
+:root[data-theme="cream"] .btn.go{color:#fff}
+
+/* ---------------- panes ---------------- */
+.body{display:grid;
+  grid-template-columns:var(--tree-w,224px) 5px minmax(0,1fr) 5px var(--insp-w,290px) 5px var(--file-w,420px);
+  min-height:0}
+.pane{background:var(--pane);overflow:auto;min-width:0}
+/* The file and the log share the last column: you read one or the other, and
+   whichever it is wants the block list beside it. */
+.filepane,.logpane{grid-column:7}
+.tree{border-right:1px solid var(--line);padding:8px 6px}
+.insp{border-left:1px solid var(--line);padding:10px 11px;display:flex;flex-direction:column;gap:9px}
+.listwrap{overflow:auto;min-width:0;background:var(--bg)}
+.list{padding:6px 0 40px}
+
+.split{background:var(--line);cursor:col-resize}
+.split:hover,.split.dragging{background:var(--accent2)}
+.split:focus-visible{outline:2px solid var(--accent2)}
+body.resizing *{cursor:col-resize!important;user-select:none}
+
+/* ---------------- file tree ---------------- */
+.thead{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink3);padding:2px 7px 7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trow{display:flex;align-items:center;gap:6px;padding:2px 7px;border-radius:5px;
+  font-family:var(--mono);font-size:11.5px;white-space:nowrap;cursor:default}
+.trow:hover{background:var(--hover)}
+.trow.on{background:var(--sel);color:var(--selink)}
+.trow .g{width:9px;text-align:center;color:var(--ink3);flex:none}
+.trow .nm{overflow:hidden;text-overflow:ellipsis}
+.trow .n{margin-left:auto;font-size:9.5px;color:var(--ink3);flex:none;padding-left:6px}
+.trow.folder{font-weight:700}
+.trow.blank .nm{color:var(--ink3)}
+.trow .dirty{color:var(--warn);flex:none}
+.i1{padding-left:20px} .i2{padding-left:33px} .i3{padding-left:46px}
+
+/* ---------------- the dense list ---------------- */
+.grp{display:flex;align-items:center;gap:8px;padding:11px 12px 4px;font-size:9.5px;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--ink2)}
+.grp .sw{width:8px;height:8px;border-radius:2px;flex:none}
+.grp .rule{flex:1;height:1px;background:var(--line)}
+.grp .n{font-family:var(--mono);color:var(--ink3)}
+
+.ln{display:flex;align-items:center;gap:9px;padding:2px 12px;min-height:var(--row);
+  font-family:var(--mono);font-size:11.5px;cursor:default}
+.ln:hover{background:var(--hover)}
+.ln.on{background:var(--sel)}
+.ln .rail{width:3px;height:14px;border-radius:2px;flex:none}
+.ln .tw{width:9px;text-align:center;color:var(--ink3);flex:none;font-size:9px}
+.ln .ty{color:var(--accent);flex:none}
+.ln .lb{font-weight:700;flex:none;max-width:24ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ln .sum{color:var(--ink2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ln .fl{color:var(--ink3);font-size:9.5px;flex:none}
+.ln .flag{font-size:9px;font-weight:700;padding:0 6px;border-radius:99px;flex:none;
+  background:rgba(227,188,107,.18);color:var(--warn)}
+
+.kid{display:flex;align-items:center;gap:9px;padding:1px 12px 1px 46px;min-height:20px;
+  font-family:var(--mono);font-size:11px;cursor:default}
+.kid:hover{background:var(--hover)}
+.kid.on{background:var(--sel)}
+.kid .k{color:var(--ink2);min-width:176px;flex:none;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap}
+.kid .v{color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kid .v.none{color:var(--ink3);font-style:italic}
+.kid .tw{width:9px;text-align:center;color:var(--ink3);flex:none;font-size:9px}
+.kid.d3{padding-left:64px} .kid.d4{padding-left:82px} .kid.d5{padding-left:100px}
+
+.empty{padding:56px 24px;text-align:center;color:var(--ink2);max-width:48ch;margin:0 auto;
+  display:flex;flex-direction:column;gap:11px;align-items:center}
+.empty b{font-size:15px;color:var(--ink)}
+
+/* ---------------- inspector ---------------- */
+.ihead{display:flex;flex-direction:column;gap:2px}
+.ihead .t{font-size:15px;font-weight:700;line-height:1.2}
+.ihead .p{font-family:var(--mono);font-size:10px;color:var(--ink3);word-break:break-all}
+.lab{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--ink3)}
+.fld{background:var(--sunk);border:1px solid var(--line);border-radius:6px;padding:3px 8px;
+  font-family:var(--mono);font-size:11.5px;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;cursor:text}
+.fld:hover{border-color:var(--accent2)}
+.fld.none{color:var(--ink3);font-style:italic}
+input.edit{background:var(--raised);border:1px solid var(--accent2);border-radius:6px;
+  padding:3px 8px;font-family:var(--mono);font-size:11.5px;outline:none;width:100%;user-select:text}
+.frow{display:flex;flex-direction:column;gap:3px}
+.hint{font-size:11px;line-height:1.5;color:var(--ink2);background:var(--sunk);
+  border:1px solid var(--line);border-radius:7px;padding:7px 9px;user-select:text}
+.hint .src{display:block;margin-top:5px;font-family:var(--mono);font-size:9px;color:var(--ink3)}
+.irow{display:flex;align-items:center;gap:7px}
+.tiny{font-size:10.5px;color:var(--ink2);line-height:1.45}
+.sel2{background:var(--sunk);border:1px solid var(--line);border-radius:6px;padding:2px 6px;
+  font-family:var(--mono);font-size:11px;max-width:100%}
+.yesno{font-family:var(--mono);font-size:10.5px;font-weight:700;padding:1px 10px;border-radius:99px;
+  border:1px solid var(--line2);background:var(--sunk);color:var(--ink2)}
+.yesno.on{background:rgba(125,211,160,.16);border-color:var(--ok);color:var(--ok)}
+.del{margin-left:auto;width:18px;height:18px;border-radius:5px;color:var(--ink3);flex:none;
+  line-height:1;font-size:13px}
+.del:hover{background:rgba(232,154,133,.15);color:var(--bad)}
+.divider{height:1px;background:var(--line)}
+
+/* ---------------- status ---------------- */
+.status{display:flex;align-items:center;gap:10px;padding:4px 11px;background:var(--pane);
+  border-top:1px solid var(--line);font-size:10.5px;color:var(--ink2)}
+.dot{width:7px;height:7px;border-radius:99px;background:var(--ok);flex:none}
+.dot.warn{background:var(--warn)} .dot.off{background:var(--ink3)}
+.status .sep{width:1px;height:11px;background:var(--line)}
+#sroot{font-family:var(--mono);font-size:10px;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;max-width:46ch}
+#sdocs{font-family:var(--mono);font-size:10px;color:var(--ink3)}
+
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--line2);border-radius:99px;border:3px solid transparent;
+  background-clip:content-box}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ---------------- tree extras ---------------- */
+.thead{display:flex;align-items:center;gap:6px}
+.thead span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.tadd{width:16px;height:16px;border-radius:4px;color:var(--ink3);font-size:12px;line-height:1;flex:none}
+.tadd:hover{background:var(--sel);color:var(--ink)}
+.trow.drop{outline:2px solid var(--accent2);outline-offset:-1px}
+
+/* ---------------- group headers ---------------- */
+.grp .gi{font-size:11px}
+.grp .gn{font-weight:700;letter-spacing:.06em}
+.grp .gd{text-transform:none;letter-spacing:0;color:var(--ink3);font-size:10px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:34ch}
+.grp{cursor:default}
+.grp.drop{background:var(--sel);border-radius:5px}
+.grp .tw{width:9px;text-align:center;color:var(--ink3);font-size:9px;flex:none}
+
+/* ---------------- editable values ---------------- */
+.can-edit{cursor:text;border-bottom:1px dotted transparent}
+.can-edit:hover{border-bottom-color:var(--accent2)}
+.kid .v.can-edit:hover{color:var(--accent)}
+.addk{opacity:.55;cursor:pointer}
+.addk:hover{opacity:1}
+.addk .dim{color:var(--ink3);font-style:italic}
+.ln[draggable="true"]{cursor:grab}
+.ln:active{cursor:grabbing}
+
+/* ---------------- inspector extras ---------------- */
+.crumb{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-bottom:2px}
+.cstep{font-family:var(--mono);font-size:10px;color:var(--ink2);padding:1px 5px;border-radius:4px}
+.cstep:hover{background:var(--sel)}
+.cstep.on{color:var(--ink);font-weight:700}
+.csep{color:var(--ink3);font-size:10px}
+.ikey{font-family:var(--mono);font-size:11px;color:var(--ink2);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:15ch}
+.fld.into{cursor:pointer;color:var(--accent)}
+.fld.into:hover{border-color:var(--accent2)}
+.btn.wide{width:100%;text-align:center}
+.sel2.wide{width:100%}
+
+/* ---------------- context menu ---------------- */
+.menu{position:fixed;z-index:50;background:var(--pane);border:1px solid var(--line2);
+  border-radius:8px;padding:4px;min-width:168px;
+  box-shadow:0 12px 30px -12px rgba(0,0,0,.6);display:flex;flex-direction:column}
+.mi{text-align:left;padding:5px 9px;border-radius:5px;font-size:11.5px}
+.mi:hover{background:var(--sel)}
+.mi.danger{color:var(--bad)}
+.mi.danger:hover{background:rgba(232,154,133,.16)}
+.msep{height:1px;background:var(--line);margin:3px 0}
+
+/* ---------------- categories sheet ---------------- */
+.modal{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.45);
+  display:grid;place-items:center}
+.sheet{background:var(--pane);border:1px solid var(--line2);border-radius:12px;
+  padding:16px;width:min(620px,92vw);max-height:86vh;overflow:auto;
+  display:flex;flex-direction:column;gap:10px;
+  box-shadow:0 24px 60px -24px rgba(0,0,0,.7)}
+.sheeth{font-size:15px;font-weight:700}
+.catlist{display:flex;flex-direction:column;gap:6px}
+.catrow{display:flex;align-items:center;gap:7px}
+.cswatch{width:30px;height:26px;padding:0;border:1px solid var(--line2);border-radius:6px;
+  background:none;cursor:pointer;flex:none}
+.cicon{width:34px;text-align:center;background:var(--sunk);border:1px solid var(--line);
+  border-radius:6px;padding:3px;font-size:13px;flex:none}
+.cname{width:150px;background:var(--sunk);border:1px solid var(--line);border-radius:6px;
+  padding:3px 7px;font-size:11.5px;flex:none}
+.cdesc{flex:1;min-width:0;background:var(--sunk);border:1px solid var(--line);border-radius:6px;
+  padding:3px 7px;font-size:11.5px}
+.catrow input:focus{outline:none;border-color:var(--accent2)}
+
+/* ---------------- workbench ---------------- */
+.list.workbench{padding:12px 14px 40px}
+.bhead{font-family:var(--mono);font-size:10.5px;color:var(--ink3);padding:0 2px 10px}
+.board{display:flex;flex-direction:column;gap:16px}
+.region{border:1px solid var(--line);border-left:3px solid var(--rc);border-radius:10px;
+  padding:10px 12px 12px;background:var(--pane);position:relative}
+.region.drop{outline:2px dashed var(--accent2);outline-offset:2px}
+.rtab{display:inline-flex;align-items:center;gap:7px;padding:2px 10px;border-radius:7px;
+  font-weight:800;font-size:11px;color:#1A1420;cursor:pointer}
+.rtab .ric{font-size:12px}
+.rtab .rn{font-family:var(--mono);font-weight:400;opacity:.7}
+.rdesc{font-size:10.5px;color:var(--ink3);padding:5px 2px 0}
+.rfold{font-size:11px;color:var(--ink3);padding:8px 2px 2px;font-style:italic}
+.mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(206px,1fr));gap:9px;
+  margin-top:9px}
+.mod{background:var(--raised);border:1px solid var(--line);border-radius:9px;overflow:hidden;
+  cursor:grab;display:flex;flex-direction:column}
+.mod:active{cursor:grabbing}
+.mod.on{border-color:var(--accent2);box-shadow:0 0 0 2px var(--sel)}
+.mbar{display:flex;align-items:center;gap:6px;padding:3px 9px;color:#1A1420}
+.mty{font-family:var(--mono);font-size:10.5px;font-weight:700}
+.mflag{margin-left:auto;font-size:10px;font-weight:700}
+.mbody{padding:7px 9px 9px;display:flex;flex-direction:column;gap:3px}
+.mlb{font-size:12.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mkv{display:flex;gap:8px;font-size:10.5px;align-items:baseline}
+.mk{color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mv{margin-left:auto;font-family:var(--mono);font-weight:700;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;max-width:14ch}
+.mmore{font-size:10px;color:var(--ink3);font-style:italic}
+
+/* ---------------- problems panel ---------------- */
+.statbtn{font:11px var(--ui);color:var(--ink2);border:1px solid transparent;border-radius:6px;
+  padding:1px 8px}
+.statbtn:hover{border-color:var(--line2)}
+.statbtn.warn{color:var(--warn);border-color:var(--warn)}
+.statbtn.bad{color:var(--bad);border-color:var(--bad)}
+.problems{position:sticky;bottom:0;background:var(--pane);border-top:2px solid var(--line2);
+  padding:9px 12px 12px;display:flex;flex-direction:column;gap:7px;max-height:46vh;overflow:auto}
+.phead{display:flex;align-items:center;gap:8px;font-weight:700;font-size:12px}
+.prob{border:1px solid var(--line);border-left:3px solid var(--ink3);border-radius:8px;
+  padding:6px 9px;display:flex;flex-direction:column;gap:3px;background:var(--bg)}
+.prob.error{border-left-color:var(--bad)}
+.prob.warning{border-left-color:var(--warn)}
+.prob.note{border-left-color:var(--ink3);opacity:.8}
+.plevel{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;padding:1px 6px;border-radius:99px;background:var(--sunk)}
+.plevel.error{color:var(--bad)} .plevel.warning{color:var(--warn)} .plevel.note{color:var(--ink3)}
+.ploc{font-family:var(--mono);font-size:10px;color:var(--ink3)}
+.pmsg{font-size:11.5px;line-height:1.5;user-select:text}
+
+/* ---------------- diff preview ---------------- */
+.sheet.wide{width:min(880px,94vw)}
+.diff{font-family:var(--mono);font-size:11px;line-height:1.55;background:var(--sunk);
+  border:1px solid var(--line);border-radius:8px;padding:7px 0;max-height:46vh;overflow:auto;
+  user-select:text}
+.dl{display:flex;gap:8px;padding:0 10px;white-space:pre}
+.dl .dn{width:38px;text-align:right;color:var(--ink3);flex:none;font-size:9.5px}
+.dl .dm{width:9px;flex:none;color:var(--ink3)}
+.dl .dt{white-space:pre-wrap;word-break:break-word}
+.dl.added{background:rgba(125,211,160,.13)}
+.dl.added .dm{color:var(--ok)}
+.dl.removed{background:rgba(232,154,133,.13)}
+.dl.removed .dm{color:var(--bad)}
+:root[data-theme="cream"] .dl.added{background:rgba(94,158,78,.13)}
+:root[data-theme="cream"] .dl.removed{background:rgba(196,99,79,.13)}
+
+.conflicts{border:1px solid var(--warn);border-radius:8px;padding:8px 10px;
+  display:flex;flex-direction:column;gap:5px;background:var(--sunk)}
+.clabel{font-weight:700;font-size:11.5px;color:var(--warn)}
+.conflict{display:flex;flex-direction:column;gap:1px}
+.cname{font-family:var(--mono);font-size:11px;font-weight:700}
+.cvals{font-family:var(--mono);font-size:10.5px;color:var(--ink2)}
+.ceffect{font-size:10.5px;color:var(--ink2);line-height:1.45}
+
+/* ---------------- the config file, beside the blocks ---------------- */
+.body.nofile #s3{display:none}
+.filepane{border-left:1px solid var(--line);background:var(--sunk);padding:0;gap:0;
+  display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.body.nofile .filepane{display:none}
+.filehead{display:flex;align-items:center;gap:7px;padding:5px 9px;background:var(--pane);
+  border-bottom:1px solid var(--line);flex:none}
+.fhname{font-family:var(--mono);font-size:10px;color:var(--ink2);overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;direction:rtl;text-align:left}
+.minibtn{font-family:var(--mono);font-size:9.5px;color:var(--ink3);border:1px solid var(--line2);
+  border-radius:5px;padding:0 6px}
+.minibtn:hover{color:var(--ink);border-color:var(--accent2)}
+.filebody{flex:1;overflow:auto;padding:6px 0 30px;font-family:var(--mono);font-size:10.5px;
+  line-height:1.6;user-select:text}
+.fl{display:flex;gap:6px;padding:0 8px;white-space:pre;cursor:default}
+.fl:hover{background:var(--hover)}
+.fl.hl{background:var(--sel);box-shadow:inset 2px 0 0 var(--accent2)}
+.fl .ftw{width:9px;flex:none;color:var(--ink3);text-align:center;font-size:9px;user-select:none}
+.fl .ftw.can{cursor:pointer}
+.fl .ftw.can:hover{color:var(--accent)}
+.fl .ln{width:32px;text-align:right;flex:none;color:var(--ink3);font-size:9.5px;user-select:none}
+.fl .ftext{white-space:pre;overflow:hidden;text-overflow:ellipsis}
+.fl .ffold{color:var(--ink3);font-style:italic;padding-left:4px;user-select:none}
+
+/* ---------------- right-click menus ---------------- */
+.menu{min-width:210px;max-width:340px}
+.mhead{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink3);padding:5px 9px 3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mi{display:flex;flex-direction:column;align-items:flex-start;gap:1px}
+.mi.tall{padding-top:4px;padding-bottom:5px}
+.mi.off{opacity:.55;cursor:default}
+.mi.off:hover{background:none}
+.mhint{font-size:10px;color:var(--ink3);line-height:1.35;white-space:normal;font-weight:400}
+.mi.off .mhint{color:var(--warn)}
+
+/* ---------------- servers ---------------- */
+.hostlist{display:flex;flex-direction:column;gap:5px}
+.hostrow{display:flex;align-items:center;gap:7px;padding:6px 8px;border:1px solid var(--line);
+  border-radius:8px;background:var(--sunk)}
+.hostrow .nm{display:flex;flex-direction:column;flex:1;min-width:0;line-height:1.25}
+.hname{font-weight:700;font-size:12px}
+.htarget{font-family:var(--mono);font-size:10px;color:var(--ink3);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn.bad{border-color:var(--bad);color:var(--bad)}
+.hostform{display:flex;flex-direction:column;gap:5px}
+.serverout{margin:0;font-family:var(--mono);font-size:11px;line-height:1.55;
+  background:var(--sunk);border:1px solid var(--line);border-radius:8px;padding:9px 11px;
+  max-height:52vh;overflow:auto;white-space:pre-wrap;user-select:text}
+.serverout.ok{border-color:var(--ok)}
+.serverout.bad{border-color:var(--bad)}
+
+/* ---------------- pickers ---------------- */
+.search.wide{width:100%}
+.picklist{display:flex;flex-direction:column;gap:2px;max-height:44vh;overflow:auto;
+  border:1px solid var(--line);border-radius:8px;padding:4px;background:var(--sunk)}
+.pick{display:grid;grid-template-columns:auto auto 1fr;gap:8px;align-items:baseline;
+  text-align:left;padding:5px 8px;border-radius:6px;width:100%}
+.pick:hover,.pick.on{background:var(--sel)}
+.pname{font-family:var(--mono);font-size:12px;font-weight:700}
+.pbadge{font-family:var(--mono);font-size:9px;color:var(--ink3);border:1px solid var(--line2);
+  border-radius:99px;padding:0 6px;white-space:nowrap}
+.phint{font-size:10.5px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;min-width:0}
+.btn.danger{border-color:var(--bad);color:var(--bad)}
+.btn.danger:hover{background:rgba(232,154,133,.12)}
+
+/* ---------------- menu bar ---------------- */
+.offstage{display:none}
+.mbar{display:flex;align-items:center;gap:1px;flex:none}
+.mtop{padding:4px 10px;border-radius:6px;font-size:11.5px;font-weight:600;color:var(--ink2);
+  white-space:nowrap}
+.mtop:hover{background:var(--sel);color:var(--ink)}
+.mtop.open{background:var(--sel);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line2)}
+.menu.dropdown{border-top-left-radius:4px;border-top-right-radius:4px}
+.cmd{min-width:180px}
+
+/* One menu row: label on the left, shortcut or arrow on the right, the
+   explanation underneath. The tick gutter only appears in menus that have
+   something to tick, so nothing is indented for no reason. */
+.mline{display:flex;align-items:baseline;gap:12px;width:100%}
+.mlabel{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mtick{flex:none;width:11px;color:var(--ok);font-size:10px}
+.mkey{flex:none;font-family:var(--mono);font-size:9.5px;color:var(--ink3);letter-spacing:.02em}
+.marrow{flex:none;color:var(--ink3);font-size:13px;line-height:1}
+.mi.hassub:hover{background:var(--sel)}
+.menu.sub{z-index:51}
+
+/* ---------------- dialogs ---------------- */
+.sheet.dlg{width:min(440px,92vw);gap:12px}
+.dfield{display:flex;flex-direction:column;gap:4px}
+.dlabel{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink3)}
+.dinput{background:var(--sunk);border:1px solid var(--line2);border-radius:7px;
+  padding:6px 9px;outline:none;font-size:12.5px;user-select:text;width:100%;box-sizing:border-box}
+.dinput:focus{border-color:var(--accent2)}
+.dhint{font-size:10.5px;color:var(--ink3);line-height:1.4}
+.derr{font-size:11px;color:var(--bad)}
+.dbody{font-size:12.5px;line-height:1.5;white-space:pre-wrap;user-select:text}
+.dbody.bad{color:var(--bad);font-family:var(--mono);font-size:11.5px}
+.ddetail{margin:0;font-family:var(--mono);font-size:11px;background:var(--sunk);
+  border:1px solid var(--line);border-radius:7px;padding:8px 10px;max-height:40vh;
+  overflow:auto;white-space:pre-wrap;user-select:text}
+
+/* A card value gets as much room as the card can spare rather than a fixed
+   character count, and a bare line — admin { "Bob Smith"; } — gets all of it,
+   since there is no key beside it to make room for. */
+.mv{max-width:none;min-width:0;flex:0 1 auto}
+.mv.bare{margin-left:0;font-weight:600;color:var(--ink)}
+
+/* ---------------- inspector: nothing selected ---------------- */
+.isum{display:flex;flex-direction:column;gap:2px}
+.irow2{display:flex;align-items:baseline;gap:8px;padding:2px 4px;border-radius:5px;cursor:pointer}
+.irow2:hover{background:var(--sel)}
+.irow2 .ikey{flex:1;min-width:0}
+.irow2 .fld{flex:none;font-family:var(--mono);font-size:10.5px;padding:1px 7px}
+.ilink{text-align:left;font-family:var(--mono);font-size:10.5px;color:var(--accent);
+  padding:2px 4px;border-radius:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ilink:hover{background:var(--sel)}
+.warnline{color:var(--warn)}
+
+/* ---------------- tree: several files at once ---------------- */
+.trow.picked{background:var(--sel);box-shadow:inset 2px 0 0 var(--accent)}
+.trow.picked .nm{font-weight:700}
+/* The parent of an open submenu stays lit, so it is obvious which row the
+   submenu belongs to while the pointer is travelling towards it. */
+.mi.subopen{background:var(--sel)}
+
+/* ---------------- tabs: one UnrealIRCd each ---------------- */
+.tabs{display:flex;align-items:stretch;gap:2px;padding:0 8px;background:var(--pane);
+  border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{display:flex;align-items:center;gap:6px;padding:5px 8px 5px 10px;cursor:pointer;
+  border:1px solid transparent;border-bottom:0;border-radius:7px 7px 0 0;
+  font-size:11.5px;font-weight:600;color:var(--ink2);white-space:nowrap;max-width:230px}
+.tab:hover{background:var(--sel);color:var(--ink)}
+.tab.on{background:var(--bg);border-color:var(--line);color:var(--ink);
+  box-shadow:inset 0 2px 0 var(--accent)}
+.tab.blank .tname{font-style:italic;color:var(--ink3)}
+.tname{overflow:hidden;text-overflow:ellipsis}
+/* A dot per instance: filled for a local folder, ringed for one over ssh. */
+.tdot{width:7px;height:7px;border-radius:50%;background:var(--ink3);flex:none}
+.tab.on .tdot{background:var(--accent)}
+.tdot.remote{background:none;border:2px solid var(--ink3);width:8px;height:8px;box-sizing:border-box}
+.tab.on .tdot.remote{border-color:var(--accent2)}
+.tdirty{color:var(--warn);font-size:9px;flex:none}
+.tx{opacity:0;font-size:14px;line-height:1;color:var(--ink3);padding:0 2px;border-radius:4px;flex:none}
+.tab:hover .tx,.tab.on .tx{opacity:1}
+.tx:hover{background:var(--line2);color:var(--ink)}
+.tplus{align-self:center;margin-left:4px;padding:2px 9px;border-radius:6px;font-size:14px;
+  line-height:1.3;color:var(--ink3);flex:none}
+.tplus:hover{background:var(--sel);color:var(--ink)}
+
+/* ---------------- the server's log ---------------- */
+.logpane{display:flex;flex-direction:column;overflow:hidden}
+.loghead{display:flex;align-items:center;gap:6px;padding:6px 8px;border-bottom:1px solid var(--line);
+  background:var(--pane);flex:none}
+.logfilt{display:flex;align-items:center;gap:4px;padding:6px 8px;border-bottom:1px solid var(--line);
+  flex:none;flex-wrap:wrap}
+.logq{flex:1;min-width:110px;background:var(--sunk);border:1px solid var(--line);border-radius:6px;
+  padding:3px 8px;outline:none;font-size:11px;user-select:text}
+.logq:focus{border-color:var(--accent2)}
+.logsub{background:var(--sunk);border:1px solid var(--line);border-radius:6px;padding:2px 4px;
+  font-size:10.5px;max-width:100%}
+.lvl{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.05em;
+  border:1px solid var(--line2);border-radius:5px;padding:1px 6px;color:var(--ink3)}
+.lvl.on{color:var(--ink);border-color:var(--accent2);background:var(--sel)}
+.lvl.warn.on{color:var(--warn);border-color:var(--warn)}
+.lvl.error.on,.lvl.fatal.on{color:var(--bad);border-color:var(--bad)}
+
+.logbody{flex:1;overflow:auto;padding:6px 8px 40px;display:flex;flex-direction:column;gap:5px}
+.logrow{border-left:2px solid var(--line2);padding:4px 0 5px 8px}
+.logrow.warn{border-left-color:var(--warn)}
+.logrow.error,.logrow.fatal{border-left-color:var(--bad)}
+.logtop{display:flex;align-items:baseline;gap:6px;font-size:9.5px;font-family:var(--mono)}
+.logtime{color:var(--ink3)}
+.logsys{color:var(--accent)}
+.logev{color:var(--ink3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.logmsg{font-size:11.5px;line-height:1.4;margin:2px 0 3px;user-select:text}
+
+/* A fact you can pick up. The kind is shown next to the value because
+   "192.0.2.7" and "an address" are not the same amount of information. */
+.chips{display:flex;flex-wrap:wrap;gap:4px}
+.chip{display:inline-flex;align-items:baseline;gap:5px;border:1px solid var(--line2);
+  border-radius:99px;padding:1px 8px 2px;font-size:10.5px;cursor:grab;background:var(--sunk);
+  max-width:100%}
+.chip:hover{border-color:var(--accent2)}
+.chip:active{cursor:grabbing}
+.ckind{font-size:8.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);flex:none}
+.cval{font-family:var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chip.k-ip .ckind,.chip.k-mask .ckind,.chip.k-host .ckind{color:var(--accent)}
+.chip.k-channel .ckind{color:var(--ok)}
+.chip.k-account .ckind,.chip.k-security-group .ckind{color:var(--warn)}
+
+/* Where a dragged fact may land. Only the row under the pointer lights up —
+   highlighting every possible target at once is noise, not guidance. */
+.dropok{outline:2px solid var(--accent);outline-offset:-2px;border-radius:5px}
+body.dragging-fact .ln,body.dragging-fact .mod,body.dragging-fact .kid{cursor:copy}
+.droppreview{color:var(--ok)}
+
+/* These three set `display` themselves, and an author display rule beats the
+   browser's own [hidden] { display: none }. Without this, hiding one of them
+   does nothing — the file pane and the log would sit on top of each other, and
+   a "hidden" tab bar would still draw its border. */
+.filepane[hidden],.logpane[hidden],.tabs[hidden]{display:none}
+
+/* ---------------- what the middle column shows ---------------- */
+.scopebar{display:flex;align-items:center;gap:6px;padding:3px 6px 6px;margin-bottom:2px;
+  border-bottom:1px solid var(--line)}
+.scopebtn{flex:1;text-align:left;font-size:10.5px;color:var(--ink2);border:1px solid var(--line2);
+  border-radius:6px;padding:2px 8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.scopebtn:hover{border-color:var(--accent2);color:var(--ink)}
+.scopebtn.on{color:var(--ink);border-color:var(--accent);background:var(--sel)}
+.scopen{font-family:var(--mono);font-size:9.5px;color:var(--ink3);cursor:pointer;flex:none}
+.scopen:hover{color:var(--ink)}
+
+/* The eye sits at the end of the row and only colours up when it matters —
+   an open eye on every one of thirty-four rows is thirty-four things to read. */
+.eye{flex:none;font-size:10px;color:var(--line2);padding:0 2px;line-height:1}
+.trow:hover .eye{color:var(--ink3)}
+.eye:hover{color:var(--ink)}
+.eye.hidden,.eye.unread{color:var(--ink3)}
+.eye.unread{color:var(--line2)}
+.trow.dim .nm,.trow.dim .n{opacity:.42}
+.trow.dim.unread .nm{font-style:italic}
+
+/* ---------------- files UnrealIRCd ships ---------------- */
+.trow.shipped .nm{color:var(--ink2)}
+.shipmark{color:var(--ink3);font-size:8px;flex:none;opacity:.7}
+.trow.shipped:hover .shipmark{color:var(--warn);opacity:1}
+.shipnote{border:1px solid var(--line2);border-left:3px solid var(--warn);border-radius:8px;
+  padding:9px 10px;display:flex;flex-direction:column;gap:7px;background:var(--sunk)}
+.shiphead{font-size:12.5px;font-weight:700}
+/* Nothing here can be edited, so nothing here should look editable. */
+body.on-shipped .can-edit{cursor:default;text-decoration:none}
+body.on-shipped .can-edit:hover{border-color:var(--line)}
+body.on-shipped .addk{display:none}
+
+/* A category with nothing in it yet. It has to be visible, because dragging a
+   block onto it is how it stops being empty. */
+.grpempty{font-size:10.5px;color:var(--ink3);font-style:italic;padding:4px 14px 8px}
+.region.bare{opacity:.72}
+.region.bare:hover,.region.drop{opacity:1}
+
+/* ---------------- the raw file, coloured ---------------- */
+/* From the parser, not a second guess at the grammar: a word shown here as a
+   block name is a block name to conf.c as well. Comments are the bulk of a
+   stock UnrealIRCd config, so they recede; the structure is what you scan for. */
+.t-comment{color:var(--ink3);font-style:italic}
+.t-name{color:var(--accent);font-weight:600}
+.t-label{color:var(--ink)}
+.t-value{color:var(--ok)}
+.t-string{color:var(--ok)}
+.t-brace{color:var(--ink3)}
+.t-semi{color:var(--line2)}
+.t-preproc{color:var(--warn);font-weight:600}
+.t-extra{color:var(--bad);text-decoration:underline wavy}
+/* A name four levels in is still a name, but it is not the headline. */
+.t-name.d1{font-weight:500;opacity:.94}
+.t-name.d2,.t-name.d3,.t-name.d4{font-weight:500;opacity:.88;color:var(--accent2)}
+:root[data-theme="cream"] .t-name{color:var(--accent2)}
+
+/* ---------------- several blocks picked at once ---------------- */
+.ln.marked,.kid.marked{background:var(--sel);box-shadow:inset 3px 0 0 var(--accent)}
+.mod.marked{border-color:var(--accent);box-shadow:0 0 0 2px var(--sel)}
+.ln.marked .k,.mod.marked .mlb{font-weight:700}
+/* A category being dragged to a new place in the order. */
+.grp.drop,.region.drop{outline:2px dashed var(--accent);outline-offset:-2px}
+.rtab{cursor:grab}
+.rtab:active{cursor:grabbing}
+
+/* A boolean is a switch, not a spelling test. Same control whether it sits in
+   a mask block or anywhere else a directive is read with CFG_YESNO. */
+.fld.yesno,.mv.yesno,.k.yesno{cursor:pointer;font-family:var(--mono);font-weight:700;
+  border-radius:99px;padding:1px 10px;border:1px solid var(--line2);text-align:center}
+.yesno.on{color:var(--ok);border-color:var(--ok);background:rgba(143,211,122,.10)}
+.yesno.off{color:var(--ink3)}
+.yesno:hover{border-color:var(--accent2)}
+
+/* A value with a known vocabulary. Marked so it reads as a thing to pick from
+   rather than a thing to type into, without pretending the list is exhaustive. */
+.fld.choice::after,.mv.choice::after{content:" \25be";color:var(--ink3);font-size:9px}
+.fld.choice:hover,.mv.choice:hover{border-color:var(--accent2)}
+
+/* Something the server knows only well enough to refuse: it is in the config,
+   so it has to be visible, but it is never offered as a choice. */
+.irow.refused .ikey, .irow.refused .fld{color:var(--bad);text-decoration:line-through}
+.refusal{font-size:11px;line-height:1.45;color:var(--bad);
+  border-left:2px solid var(--bad);padding:2px 0 2px 8px;margin:0 0 6px 2px}
+.ln .flag.bad{background:var(--bad);color:#fff}
+
+/* An "add" row says which block it adds to, and lights that block up on
+   hover. Two of them in a row, both reading "add a directive here", is how a
+   permission ended up beside permissions { } instead of inside it. */
+.addk .k.dim{font-style:italic}
+.ln.target,.kid.target{box-shadow:inset 0 0 0 1px var(--accent);border-radius:4px}
+
+/* ---------------- viewers ---------------- */
+/* Read-only windows onto what the config adds up to. Wide, because most of
+   them are tables and a table that wraps is a table you cannot read. */
+.sheet.viewer{width:min(1180px,96vw);height:min(820px,92vh);max-height:92vh;
+  padding:0;gap:0;overflow:hidden}
+.vhead{display:flex;align-items:center;gap:10px;padding:13px 16px;
+  border-bottom:1px solid var(--line)}
+.vmain{display:flex;flex:1;min-height:0}
+.vrail{width:236px;flex:none;border-right:1px solid var(--line);overflow:auto;
+  padding:8px;display:flex;flex-direction:column;gap:2px;background:var(--sunk)}
+.vpick{display:flex;align-items:center;gap:8px;text-align:left;padding:6px 9px;
+  border:0;border-radius:7px;background:none;color:var(--ink2);cursor:pointer;
+  font:inherit;font-size:11.5px;line-height:1.3}
+.vpick:hover{background:var(--hover);color:var(--ink)}
+.vpick.on{background:var(--sel);color:var(--ink);font-weight:600}
+.vicon{width:17px;text-align:center;flex:none;font-size:12px}
+.vbody{flex:1;min-width:0;overflow:auto;padding:14px 16px}
+.vblurb{color:var(--ink2);font-size:11.5px;margin-bottom:12px;line-height:1.5}
+.vhold{display:flex;flex-direction:column;gap:14px}
+
+.vsec{display:flex;flex-direction:column;gap:6px}
+.vsech{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
+.vsub{color:var(--ink3);font-size:10.5px}
+.vsep{color:var(--ink3);font-size:10.5px;padding:0 2px}
+.vempty{color:var(--ink3);font-style:italic;font-size:11.5px;padding:8px 0}
+.vwarn{color:var(--bad);font-size:11.5px;line-height:1.5;
+  border-left:2px solid var(--bad);padding:3px 0 3px 9px}
+.vnote{color:var(--warn);font-size:11.5px;line-height:1.5;
+  border-left:2px solid var(--warn);padding:3px 0 3px 9px}
+.vbar{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.vsel{background:var(--sunk);border:1px solid var(--line);border-radius:7px;
+  color:var(--ink);padding:5px 8px;font:inherit;font-size:11.5px}
+.vcheck{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2)}
+
+.vtable{display:flex;flex-direction:column;border:1px solid var(--line);
+  border-radius:8px;overflow:hidden;font-size:11.5px}
+.vtr{display:flex;gap:0;border-top:1px solid var(--line)}
+.vtr:first-child{border-top:0}
+.vth{background:var(--sunk);color:var(--ink3);font-size:10px;font-weight:700;
+  letter-spacing:.05em;text-transform:uppercase}
+.vtd{flex:1;min-width:0;padding:5px 9px;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap}
+.vtr:hover:not(.vth){background:var(--hover)}
+.vtr.vown .vtd:first-child{color:var(--accent);font-weight:600}
+.vtr.vsame{color:var(--ink3)}
+.vtr.vdim{color:var(--ink3);font-style:italic}
+.vtr.vbad{background:color-mix(in srgb,var(--bad) 12%,transparent)}
+
+.vwhere{background:none;border:0;color:var(--ink3);font:inherit;font-size:10.5px;
+  cursor:pointer;padding:0;text-align:left;text-decoration:underline dotted}
+.vwhere:hover{color:var(--accent)}
+.vlink{background:none;border:0;color:var(--accent);font:inherit;font-size:10.5px;
+  cursor:pointer;padding:0}
+.vlink:hover{text-decoration:underline}
+
+.vchip{display:inline-block;font-size:9.5px;font-weight:700;padding:1px 6px;
+  border-radius:99px;background:var(--sunk);color:var(--ink2);margin-right:5px;
+  border:1px solid var(--line)}
+.vchip.good{background:var(--ok);color:#04150c;border-color:transparent}
+.vchip.bad{background:var(--bad);color:#fff;border-color:transparent}
+.vchip.warn{background:var(--warn);color:#1a1200;border-color:transparent}
+.vchip.dim{color:var(--ink3)}
+.vchip.n{background:var(--accent);color:#0d0820;border-color:transparent}
+
+.vsplit{display:flex;gap:14px;align-items:flex-start}
+.vtree{width:300px;flex:none;display:flex;flex-direction:column;gap:1px}
+.vdetail{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.vdh{font-size:16px;font-weight:700}
+.vnode{display:flex;align-items:center;gap:7px;text-align:left;border:0;
+  background:none;color:var(--ink2);font:inherit;font-size:11.5px;cursor:pointer;
+  padding:4px 8px;border-radius:6px}
+.vnode:hover{background:var(--hover);color:var(--ink)}
+.vnode.on{background:var(--sel);color:var(--ink);font-weight:600}
+.vtwig{color:var(--ink3);flex:none;width:11px;font-size:10px}
+.vname{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.vcount{color:var(--ink3);font-size:10px;flex:none}
+
+.vcols{display:flex;gap:12px;align-items:flex-start}
+.vcol{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.vitem{font-size:11px;padding:2px 7px;border-radius:5px;background:var(--sunk);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vitem.vplus{color:var(--accent)}
+.vitem.vsame{color:var(--ink3)}
+
+.vstep{display:flex;flex-direction:column;gap:4px;border-left:2px solid var(--line);
+  padding-left:11px}
+.vhit,.vmiss,.vskip,.vpass,.vmaybe,.vinc,.vlogrow{display:flex;align-items:center;
+  gap:8px;font-size:11.5px;padding:2px 0}
+.vmiss{color:var(--ink3)}
+.vskip{color:var(--ink3);text-decoration:line-through}
+.vpass{color:var(--ink3);font-style:italic}
+.vmaybe{color:var(--warn)}
+.vinc.vdim{color:var(--ink3)}
+.vlogrow{line-height:1.45}
+
+/* A list criterion — account { }, country { } — shows what is in it. It used
+   to render as the words "0 entries" and no way to change that. */
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin:5px 0 2px 0}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;
+  background:var(--sunk);border:1px solid var(--line);border-radius:99px;
+  padding:2px 4px 2px 9px;color:var(--ink)}
+.chipt{cursor:text}
+.chipt.can-edit:hover{color:var(--accent)}
+.chipx{background:none;border:0;color:var(--ink3);cursor:pointer;font:inherit;
+  font-size:12px;line-height:1;padding:0 4px;border-radius:99px}
+.chipx:hover{color:var(--bad);background:var(--hover)}
+.chip.add{cursor:pointer;padding:2px 10px;color:var(--accent2);
+  border-style:dashed;font:inherit;font-size:11px}
+.chip.add:hover{background:var(--hover);color:var(--accent)}
+.fld.none{color:var(--ink3);font-style:italic}
+
+/* Somebody else has edited a file we are holding. A strip, not a dialog:
+   nothing here is your mistake and none of it is urgent. */
+.diskbar{display:flex;flex-direction:column;border-bottom:1px solid var(--line2);
+  background:var(--sunk)}
+.diskrow{display:flex;align-items:center;gap:9px;padding:6px 12px;font-size:11.5px;
+  border-left:3px solid var(--accent2)}
+.diskrow + .diskrow{border-top:1px solid var(--line)}
+.diskrow.clash{border-left-color:var(--warn);
+  background:color-mix(in srgb,var(--warn) 8%,transparent)}
+.diskicon{flex:none;color:var(--accent2);font-size:12px}
+.diskrow.clash .diskicon{color:var(--warn)}
+.diskwhat{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.diskmine{color:var(--warn)}
+/* An author display rule beats the browser's [hidden], so say it again here —
+   the same trap the file and log panes above hit. */
+.diskbar[hidden]{display:none}
+.minibtn.go{color:var(--accent);border-color:var(--accent)}
+.minibtn.go:hover{background:var(--accent);color:#0d0820}
+
+/* ---------------- the operclass chart ---------------- */
+/* Drawn, not listed: the shape of who inherits from whom is the point. */
+.chartwrap{display:flex;flex-direction:column;gap:12px}
+.chartbox{border:1px solid var(--line);border-radius:9px;background:var(--sunk);
+  overflow:hidden;display:flex;flex-direction:column}
+.charttools{display:flex;align-items:center;gap:8px;padding:5px 9px;
+  border-bottom:1px solid var(--line)}
+svg.chart{width:100%;height:auto;max-height:52vh;min-height:150px;display:block;
+  cursor:grab;touch-action:none}
+svg.chart.grabbing{cursor:grabbing}
+.edge{fill:none;stroke:var(--line2);stroke-width:1.4}
+.edge.oper{stroke-dasharray:3 3}
+.node rect{fill:var(--pane);stroke:var(--line2);stroke-width:1.2}
+.node:hover rect{stroke:var(--accent2)}
+.node.on rect{stroke:var(--accent);stroke-width:2;
+  fill:color-mix(in srgb,var(--accent) 14%,var(--pane))}
+.node.oper rect{fill:var(--sunk);stroke-dasharray:3 3}
+.node{cursor:pointer}
+.node:focus{outline:none}
+.node:focus rect{stroke:var(--accent)}
+.nlabel{fill:var(--ink);font-size:12px;font-weight:600;text-anchor:middle;
+  font-family:var(--mono)}
+.node.oper .nlabel{font-size:11px;font-weight:500;fill:var(--ink2)}
+.nsub{fill:var(--ink3);font-size:9.5px;text-anchor:middle}
+
+/* The permission tree, in the shape the server keeps it. */
+.ptree{display:flex;flex-direction:column;border:1px solid var(--line);
+  border-radius:8px;overflow:auto;max-height:300px}
+.prow{display:flex;align-items:center;gap:7px;font-size:11.5px;padding:1px 8px}
+.prow:hover{background:var(--hover)}
+.pdot{width:6px;height:6px;border-radius:99px;flex:none;background:var(--ink3)}
+.pdot.own{background:var(--accent)}
+.pdot.part{background:none;border:1px solid var(--line2)}
+.pname2{font-family:var(--mono)}
+.pfrom{margin-left:auto;color:var(--ink3);font-size:10px}
+.pfrom.own{color:var(--accent)}
+
+/* ---------------- who can do what ---------------- */
+.grid{display:flex;flex-direction:column;border:1px solid var(--line);
+  border-radius:8px;overflow:auto;max-height:60vh;font-size:11.5px}
+.grow{display:grid;grid-template-columns:minmax(220px,1fr) repeat(var(--cols),110px);
+  border-top:1px solid var(--line)}
+.grow:first-child{border-top:0}
+.grow:hover:not(.ghead):not(.gsep){background:var(--hover)}
+.ghead{position:sticky;top:0;background:var(--sunk);z-index:1}
+.gsep{background:var(--sunk);font-weight:700;letter-spacing:.05em;
+  text-transform:uppercase;font-size:10px;color:var(--ink3)}
+.gsep .gname{padding:4px 8px}
+.gname{padding:3px 8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  font-family:var(--mono)}
+.gcell{display:flex;align-items:center;justify-content:center;padding:3px 6px;
+  border-left:1px solid var(--line)}
+.gcolhead{flex-direction:column;gap:1px;padding:5px 6px;text-align:center}
+.gwho{color:var(--ink3);font-size:9.5px;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;max-width:100%}
+.mark{color:var(--ink2);font-size:11px}
+.mark.own{color:var(--accent)}
+.mark.no{color:var(--line2)}
+
+/* The staff chart: people in boxes, peers side by side under one bracket. */
+.node.rank>rect{display:none}
+.bracket{fill:none;stroke:var(--line2);stroke-width:1.4}
+.person rect{fill:var(--pane);stroke:var(--line2);stroke-width:1.2}
+.person{cursor:pointer}
+.person:hover rect{stroke:var(--accent2)}
+.node.rank.on .person rect{stroke:var(--accent);
+  fill:color-mix(in srgb,var(--accent) 12%,var(--pane))}
+.person .nsub{font-size:8.5px}
+.rankname{fill:var(--ink3);font-size:9.5px;text-anchor:middle;font-family:var(--mono)}
+.edge.rank{stroke-dasharray:none}
+
+/* Table or family tree, where there is a choice. */
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:7px;overflow:hidden}
+.segb{background:none;border:0;color:var(--ink3);font:inherit;font-size:11px;
+  padding:4px 10px;cursor:pointer}
+.segb + .segb{border-left:1px solid var(--line2)}
+.segb:hover{color:var(--ink);background:var(--hover)}
+.segb.on{background:var(--sel);color:var(--ink);font-weight:600}
+
+/* ---------------- icons ---------------- */
+/* One drawing, one weight, one box. They take the colour of whatever they sit
+   in, so a category icon is that category's colour and an icon beside text is
+   the colour of the text. */
+.ico{width:1.15em;height:1.15em;flex:none;display:block;
+  fill:none;stroke:currentColor;stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+/* An icon somebody typed in themselves, before there was a set to pick from. */
+.icoc{display:inline-block;width:1.15em;text-align:center;flex:none}
+
+.gi,.ric,.vicon,.diskicon{display:inline-flex;align-items:center;justify-content:center}
+.gi .ico{width:13px;height:13px}
+.ric .ico{width:13px;height:13px}
+.vicon .ico{width:14px;height:14px}
+.diskicon .ico{width:14px;height:14px}
+
+/* Choosing one. */
+.cicon{position:relative;display:inline-flex;align-items:center;justify-content:center;
+  width:34px;height:26px;padding:0;flex:none;cursor:pointer;
+  background:var(--sunk);border:1px solid var(--line);border-radius:6px;color:var(--ink)}
+.cicon:hover{border-color:var(--accent2)}
+.cicon .ico{width:15px;height:15px}
+.icopop{position:absolute;top:calc(100% + 5px);left:0;z-index:70;
+  display:grid;grid-template-columns:repeat(8,1fr);gap:2px;padding:5px;
+  background:var(--pane);border:1px solid var(--line2);border-radius:8px;
+  box-shadow:0 14px 34px -14px rgba(0,0,0,.7);width:max-content}
+.icopick{display:flex;align-items:center;justify-content:center;width:26px;height:26px;
+  padding:0;background:none;border:0;border-radius:6px;cursor:pointer;color:var(--ink2)}
+.icopick:hover{background:var(--hover);color:var(--ink)}
+.icopick.on{background:var(--sel);color:var(--accent)}
+.icopick .ico{width:15px;height:15px}
+
+/* A directive with a value *and* a block — log's `file "x" { maxsize 100M; }`.
+   The value is the part you came to change, so it leads and the count follows. */
+.kid .v.lv{color:var(--ink);flex:none;max-width:46%;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;margin-right:9px}
+.kid .v.lv.can-edit:hover{color:var(--accent)}

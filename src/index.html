@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en" data-theme="console">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Confetti</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+
+  <div class="top">
+    <span class="brand">Confetti</span>
+
+    <nav class="mbar" id="mbar" aria-label="Main menu"></nav>
+
+    <div class="cmd">
+      <span class="prompt">&rsaquo;</span>
+      <input id="q" type="text" spellcheck="false" autocomplete="off"
+             placeholder="filter blocks — try set::anti-flood, or a value">
+      <span class="kbd" id="qhint">Ctrl K</span>
+    </div>
+
+    <button class="btn" id="btn-add" title="Add a block to this file">+ Block</button>
+    <button class="btn go" id="btn-save" disabled>Save</button>
+
+    <!-- Everything below is driven by the menu bar. They stay in the document so
+         the existing wiring, the enabled/disabled states and the keyboard
+         shortcuts all keep working against one set of handlers. -->
+    <div class="offstage" hidden>
+      <button id="btn-undo" disabled>Undo</button>
+      <button id="btn-redo" disabled>Redo</button>
+      <button id="btn-open">Open folder</button>
+      <button id="btn-servers">Servers</button>
+      <button id="btn-configtest">Check on server</button>
+      <button id="btn-rehash">Rehash</button>
+      <button id="btn-docs">Docs</button>
+      <button id="btn-view">View</button>
+      <button id="btn-cats">Categories</button>
+      <button id="btn-file">File</button>
+      <button id="btn-theme">Theme</button>
+    </div>
+  </div>
+
+  <!-- One tab per UnrealIRCd. Hidden while there is only one of them. -->
+  <div class="tabs" id="tabs" hidden></div>
+
+  <div class="body">
+    <div class="pane tree" id="tree"></div>
+    <div class="split" id="s1" role="separator" tabindex="0" title="Drag to resize"></div>
+    <div class="listwrap"><div class="list" id="list"></div></div>
+    <div class="split" id="s2" role="separator" tabindex="0" title="Drag to resize"></div>
+    <div class="pane insp" id="insp"></div>
+    <div class="split" id="s3" role="separator" tabindex="0" title="Drag to resize"></div>
+    <div class="pane logpane" id="logpane" hidden></div>
+    <div class="pane filepane" id="filepane">
+      <div class="filehead">
+        <span class="fhname" id="fhname">the file</span>
+        <span class="spacer"></span>
+        <button class="minibtn" id="btn-log" title="Read the server's log">Log</button>
+      <button class="minibtn" id="btn-foldall" title="Fold every block">fold</button>
+        <button class="minibtn" id="btn-unfoldall" title="Unfold everything">unfold</button>
+      </div>
+      <div class="filebody" id="filebody"></div>
+    </div>
+  </div>
+
+  <div class="status">
+    <span class="dot" id="sdot"></span>
+    <span id="sroot">nothing open</span>
+    <span class="sep"></span>
+    <span id="scount"></span>
+    <span class="spacer"></span>
+    <button class="statbtn" id="btn-problems" title="What Confetti found">no problems</button>
+    <span id="sdocs"></span>
+  </div>
+
+</div>
+<script src="dialog.js"></script>
+<script src="icons.js"></script>
+<script src="main.js"></script>
+<script src="features.js"></script>
+<script src="file.js"></script>
+<script src="menu.js"></script>
+<script src="connect.js"></script>
+<script src="pick.js"></script>
+<script src="menubar.js"></script>
+<script src="context.js"></script>
+<script src="tabs.js"></script>
+<script src="log.js"></script>
+<script src="visible.js"></script>
+<script src="shipped.js"></script>
+<script src="multi.js"></script>
+<script src="views.js"></script>
+<script src="watchfile.js"></script>
+</body>
+</html>

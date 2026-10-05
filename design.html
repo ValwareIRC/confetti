@@ -1,0 +1,941 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<style>html{color-scheme:light dark}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Confetti &mdash; design study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Nunito:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{
+  --cream:#F6F1E7; --panel:#FEFBF5; --panel2:#F0E9DA; --sunk:#EBE3D1;
+  --ink:#463C33; --ink2:#7C6E60; --ink3:#A2957F; --line:#E2D8C6; --line2:#D0C2A9;
+  --mint:#9FCB8D; --mintsoft:#E2EFD6; --lilac:#B9A4E4; --lilacsoft:#EBE4FA;
+  --peach:#EFAE90; --peachsoft:#FBE4D8; --sky:#93C3D6; --skysoft:#E0EFF5;
+  --ok:#5E9E4E; --warn:#B5851F; --bad:#C4634F;
+  --accent:#8763CC; --accentsoft:#EBE4FA;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --cream:#241F1B; --panel:#2E2823; --panel2:#38312A; --sunk:#1D1915;
+    --ink:#F1E8DB; --ink2:#BDAE9B; --ink3:#8D8070; --line:#453C33; --line2:#574C40;
+    --mintsoft:#31402C; --lilacsoft:#372F4A; --peachsoft:#46332A; --skysoft:#283A42;
+    --ok:#88C574; --warn:#DDB055; --bad:#E28D78;
+    --accent:#C2AAF2; --accentsoft:#372F4A;
+  }
+}
+:root[data-theme="dark"]{
+  --cream:#241F1B; --panel:#2E2823; --panel2:#38312A; --sunk:#1D1915;
+  --ink:#F1E8DB; --ink2:#BDAE9B; --ink3:#8D8070; --line:#453C33; --line2:#574C40;
+  --mintsoft:#31402C; --lilacsoft:#372F4A; --peachsoft:#46332A; --skysoft:#283A42;
+  --ok:#88C574; --warn:#DDB055; --bad:#E28D78;
+  --accent:#C2AAF2; --accentsoft:#372F4A;
+}
+
+*{box-sizing:border-box}
+body{background:var(--cream);color:var(--ink);margin:0;
+  font-family:"Nunito",ui-rounded,"Segoe UI",system-ui,sans-serif;font-size:16px;line-height:1.62;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px 90px}
+.col{max-width:648px}
+h1,h2,h3{font-family:"Fredoka","Nunito",sans-serif;font-weight:500;text-wrap:balance;margin:0}
+h2{font-size:1.72rem;letter-spacing:-.012em;line-height:1.22}
+h3{font-size:1rem}
+p{margin:0}
+a{color:var(--accent)}
+code,.mono{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace}
+.col p,.col ul,.col ol{max-width:65ch}
+p code,li code,.note code{font-size:.84em;background:var(--panel2);padding:1px 6px;border-radius:6px}
+kbd{font-family:"JetBrains Mono",monospace;font-size:.76em;background:var(--panel2);
+  border:1px solid var(--line2);border-bottom-width:2px;border-radius:5px;padding:1px 5px}
+
+section{padding-top:74px}
+.stack{display:flex;flex-direction:column;gap:18px}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:.66rem;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--ink3)}
+.lede{font-size:1.06rem;color:var(--ink2)}
+.note{font-size:.9rem;color:var(--ink2)}
+.callout{border-left:3px solid var(--lilac);padding:1px 0 1px 18px;color:var(--ink2);
+  font-size:.95rem;max-width:65ch}
+
+header{padding:64px 0 4px}
+.brandrow{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+h1{font-size:3.5rem;font-weight:600;letter-spacing:-.028em;line-height:1}
+.brandrow .sub{font-family:"Fredoka",sans-serif;font-size:1.08rem;color:var(--ink3)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:.78rem;font-weight:700;padding:5px 12px;border-radius:999px;
+  background:var(--panel2);color:var(--ink2);border:1px solid var(--line)}
+.chip.hi{background:var(--lilacsoft);border-color:transparent;color:var(--ink)}
+
+.bleed{margin-top:26px;overflow-x:auto;padding-bottom:6px}
+.bleed::-webkit-scrollbar{height:9px}
+.bleed::-webkit-scrollbar-thumb{background:var(--line2);border-radius:99px}
+
+/* ============ APP RENDER — always light, it is a picture ============ */
+.render{
+  --cream:#F6F1E7; --panel:#FEFBF5; --panel2:#F0E9DA; --sunk:#EBE3D1;
+  --ink:#463C33; --ink2:#7C6E60; --ink3:#A2957F; --line:#E2D8C6; --line2:#D0C2A9;
+  --ok:#5E9E4E; --warn:#B5851F; --bad:#C4634F;
+  --t1:#FEFBF5; --t2:#F7F1E3; --t3:#EFE7D5; --t4:#E5DBC5; --t5:#D9CDB3;
+  min-width:1020px;background:var(--cream);color:var(--ink);
+  border:1px solid var(--line2);border-radius:20px;overflow:hidden;
+  box-shadow:0 22px 52px -32px rgba(70,60,51,.6);font-size:12.5px;line-height:1.45}
+.render.narrow{min-width:660px;max-width:790px}
+
+.tbar{display:flex;align-items:center;gap:11px;padding:9px 14px;
+  background:var(--panel2);border-bottom:1px solid var(--line)}
+.logo{width:24px;height:24px;border-radius:8px;display:grid;place-items:center;font-size:13px;
+  background:linear-gradient(140deg,#F2C3A6,#CBB4EC 58%,#A9D69A)}
+.tbar .name{font-family:"Fredoka",sans-serif;font-size:14px}
+.conn{display:flex;align-items:center;gap:7px;padding:4px 11px;border-radius:999px;
+  background:#E2EFD6;border:1px solid #C6DDB6;font-weight:700;font-size:11.5px;color:#3F5333}
+.dot{width:7px;height:7px;border-radius:99px;background:var(--ok);flex:none}
+.spacer{flex:1}
+.btn{padding:5px 13px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);
+  font-weight:700;font-size:11.5px;color:var(--ink);white-space:nowrap}
+.btn.go{background:#CBB4EC;border-color:#B49FDA;color:#2F2440}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--ink2)}
+
+.body3{display:grid;grid-template-columns:196px 1fr 274px;min-height:520px}
+.pane{background:var(--panel);border-right:1px solid var(--line);padding:11px;
+  display:flex;flex-direction:column;gap:8px}
+.pane.right{border-right:none;border-left:1px solid var(--line);background:var(--sunk);padding:0}
+.panehead{font-size:9.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--ink3)}
+.search{display:flex;align-items:center;gap:7px;padding:6px 10px;border-radius:9px;
+  background:var(--sunk);border:1px solid var(--line);color:var(--ink3);font-size:11.5px}
+.cat{display:flex;align-items:center;gap:9px;padding:6px 9px;border-radius:10px;
+  border:1px solid var(--line);background:var(--panel2);font-weight:700;font-size:11.5px}
+.cat .sw{width:14px;height:14px;border-radius:5px;flex:none}
+.cat .n{flex:1}
+.cat .cnt{font-family:"JetBrains Mono",monospace;font-size:10px;padding:1px 7px;border-radius:99px;
+  background:var(--panel);border:1px solid var(--line2);color:var(--ink2)}
+.cat.on{background:#F5EDFB;border-color:#DCC9EE}
+
+/* -------- the workspace -------- */
+.canvas{background-color:#E7F0DC;
+  background-image:linear-gradient(#D6E5C5 1px,transparent 1px),linear-gradient(90deg,#D6E5C5 1px,transparent 1px);
+  background-size:22px 22px;padding:13px;display:flex;flex-direction:column;gap:10px}
+.wsbar{display:flex;align-items:center;gap:9px}
+.wsbar .t{font-size:9.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#66785A}
+.wsbar .r{flex:1;height:1px;background:#CCDDB8}
+.wscols{display:grid;grid-template-columns:1.32fr 1fr;gap:10px;align-items:start}
+.wscol{display:flex;flex-direction:column;gap:10px}
+
+.tray{border-radius:13px;border:1px solid var(--line2);background:var(--t1);overflow:hidden;
+  box-shadow:0 3px 9px -6px rgba(70,60,51,.45)}
+.tray.d2{border-radius:11px;background:var(--t2);border-color:#E0D5BF;box-shadow:none}
+.tray.d3{border-radius:10px;background:var(--t3);border-color:#D6C9B0}
+.tray.d4{border-radius:9px;background:var(--t4);border-color:#CBBBA0}
+.tray.d5{border-radius:8px;background:var(--t5);border-color:#BEAC8E}
+.tray.sel{border-color:#B49FDA;box-shadow:0 0 0 2px #E6DBF8}
+.tray.warn{border-color:#DEBE85;box-shadow:0 0 0 2px #FAEDD3}
+
+.th{display:flex;align-items:center;gap:8px;padding:7px 9px}
+.tray.d2>.th,.tray.d3>.th,.tray.d4>.th,.tray.d5>.th{padding:5px 8px}
+.chev{color:var(--ink3);font-size:9px;width:9px;flex:none}
+.ic{width:20px;height:20px;border-radius:7px;display:grid;place-items:center;flex:none;font-size:11px}
+.tray.d2>.th .ic,.tray.d3>.th .ic,.tray.d4>.th .ic,.tray.d5>.th .ic{width:17px;height:17px;font-size:10px;border-radius:6px}
+.nm{display:flex;flex-direction:column;line-height:1.16;min-width:0}
+.nm .p{font-family:"Fredoka",sans-serif;font-size:12.5px}
+.tray.d3>.th .nm .p,.tray.d4>.th .nm .p,.tray.d5>.th .nm .p{font-size:11.5px}
+.nm .r{font-family:"JetBrains Mono",monospace;font-size:8.6px;color:var(--ink3);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sum{margin-left:auto;font-size:10px;color:var(--ink2);white-space:nowrap;
+  display:flex;align-items:center;gap:7px}
+.pips{display:flex;gap:2.5px;flex:none}
+.pips i{width:3.5px;height:3.5px;border-radius:99px;background:var(--line2);display:block}
+.pips i.on{background:#9E8FBE}
+.kids{padding:0 9px 9px;display:flex;flex-direction:column;gap:7px}
+.tray.d2>.kids,.tray.d3>.kids,.tray.d4>.kids{padding:0 7px 7px;gap:5px}
+
+.leaf{display:flex;align-items:center;gap:8px;padding:4px 8px;border-radius:8px;background:rgba(255,255,255,.5)}
+.leaf .nm .p{font-size:11.5px;font-family:"Nunito",sans-serif;font-weight:600}
+.val{margin-left:auto;font-family:"JetBrains Mono",monospace;font-size:10.5px;font-weight:500;
+  background:var(--panel);border:1px solid var(--line2);border-radius:7px;padding:1px 8px;white-space:nowrap}
+.val.edit{border-color:#B49FDA;background:#F3EDFC}
+.val.bad{border-color:#E0B7AC;background:#FBEAE5;color:#93412F}
+.flag{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:99px;
+  background:#FAEDD3;color:#7E5D10;font-size:9.5px;font-weight:700}
+
+/* -------- file panel -------- */
+.filehead{display:flex;align-items:center;gap:8px;padding:7px 11px;background:var(--panel2);
+  border-bottom:1px solid var(--line)}
+.filehead .fn{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--ink2)}
+.filebody{padding:9px 0;font-family:"JetBrains Mono",monospace;font-size:10.5px;line-height:1.62}
+.fl{display:flex;gap:9px;padding:0 11px}
+.fl .ln{color:var(--ink3);width:20px;text-align:right;flex:none;font-size:9.5px}
+.fl.hl{background:#F3EDFC;box-shadow:inset 2px 0 0 #B49FDA}
+.fl.warnl{background:#FAEDD3;box-shadow:inset 2px 0 0 #DEBE85}
+.fc{color:var(--ink3)}
+.fk{color:#7E5AB8}
+.fs{color:#3F7A46}
+
+/* -------- console + status -------- */
+.console{background:#2B2621;color:#E8DDCB;padding:8px 13px;font-family:"JetBrains Mono",monospace;
+  font-size:10.5px;line-height:1.66;display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.console .head{display:flex;align-items:center;gap:8px;color:#948877;font-size:9.5px;
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:3px}
+.ce{color:#E89A85} .cw{color:#E3BC6B} .cd{color:#948877} .cg{color:#9CB388}
+.sbar{display:flex;align-items:center;gap:13px;padding:6px 14px;background:var(--panel2);
+  border-top:1px solid var(--line);font-size:10.5px;color:var(--ink2)}
+.sbar .mono{font-size:10px}
+.meter{width:92px;height:7px;border-radius:99px;background:var(--sunk);overflow:hidden;flex:none}
+.meter i{display:block;height:100%;width:57%;background:linear-gradient(90deg,#CBB4EC,#9FCB8D)}
+
+/* -------- split editor render -------- */
+.split{display:grid;grid-template-columns:1fr 1fr;min-height:300px}
+.sleft{padding:14px 16px;display:flex;flex-direction:column;gap:11px;background:var(--panel)}
+.sright{background:var(--sunk);border-left:1px solid var(--line)}
+.sent{font-size:13px;line-height:1.95;max-width:34ch}
+.sent .ch{font-family:"JetBrains Mono",monospace;font-size:11.5px;font-weight:500;
+  background:var(--panel2);border:1px solid var(--line2);border-radius:7px;padding:1px 8px;
+  border-bottom-style:dashed;border-bottom-color:#B49FDA}
+.sent .ch.live{background:#F3EDFC;border-color:#B49FDA}
+.sent .ch.sel{background:#EFE6C9;border-color:#D9BE7C}
+
+/* -------- tree render -------- */
+.tree{display:flex;flex-direction:column;gap:2px;font-family:"JetBrains Mono",monospace;font-size:11.5px}
+.tnode{display:flex;align-items:center;gap:7px;padding:3px 8px;border-radius:7px}
+.tnode.sel{background:#EDE6FA}
+.tnode .g{width:14px;text-align:center;color:var(--ink3)}
+.tnode .meta{margin-left:auto;font-size:10px;color:var(--ink3);font-family:"Nunito",sans-serif}
+.i1{padding-left:22px} .i2{padding-left:40px}
+
+/* ============ doc furniture ============ */
+.tbl{width:100%;border-collapse:collapse;font-size:.9rem}
+.tbl th{text-align:left;font-family:"JetBrains Mono",monospace;font-size:.63rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);
+  padding:0 14px 8px 0;border-bottom:1px solid var(--line2);white-space:nowrap}
+.tbl td{padding:11px 14px 11px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl td:last-child,.tbl th:last-child{padding-right:0}
+.tbl code{font-size:.82rem;background:var(--panel2);padding:1px 6px;border-radius:6px;white-space:nowrap}
+.tbl tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto;margin-top:22px}
+.tblwrap .tbl{min-width:620px}
+
+.twoup{display:grid;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));gap:15px;margin-top:24px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px 17px;
+  display:flex;flex-direction:column;gap:7px}
+.box p{font-size:.87rem;color:var(--ink2)}
+.box .stamp{font-family:"JetBrains Mono",monospace;font-size:.62rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)}
+
+ul.tight,ol.tight{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px}
+ul.tight li::marker{color:var(--ink3)}
+ol.tight li::marker{color:var(--ink3);font-family:"JetBrains Mono",monospace;font-size:.82rem;font-weight:700}
+
+/* depth evidence strip */
+.depthgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:24px}
+.dcell{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:13px 15px;
+  display:flex;flex-direction:column;gap:3px}
+.dcell .n{font-family:"JetBrains Mono",monospace;font-size:1.55rem;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.dcell .l{font-size:.8rem;color:var(--ink2)}
+.dcell.a{background:var(--mintsoft)} .dcell.b{background:var(--skysoft)}
+.dcell.c{background:var(--lilacsoft)} .dcell.d{background:var(--peachsoft)}
+
+.bars{display:flex;flex-direction:column;gap:9px;margin-top:24px;max-width:560px}
+.bar{display:grid;grid-template-columns:96px 1fr 42px;gap:12px;align-items:center;font-size:.86rem}
+.bar .bl{color:var(--ink2)}
+.bar .bt{height:15px;border-radius:5px;background:var(--lilac);min-width:3px}
+.bar .bn{font-family:"JetBrains Mono",monospace;font-size:.8rem;color:var(--ink2);
+  font-variant-numeric:tabular-nums;text-align:right}
+
+pre.code{margin:22px 0 0;background:var(--sunk);border:1px solid var(--line);border-radius:12px;
+  padding:14px 16px;overflow-x:auto;font-family:"JetBrains Mono",monospace;
+  font-size:.79rem;line-height:1.66;color:var(--ink)}
+pre.code .c{color:var(--ink3)} pre.code .k{color:var(--accent);font-weight:700}
+
+.quests{display:flex;flex-direction:column;margin-top:24px;max-width:700px}
+.q{display:grid;grid-template-columns:24px 1fr auto;gap:14px;align-items:baseline;
+  padding:13px 0;border-bottom:1px solid var(--line)}
+.q:last-child{border-bottom:none}
+.q .num{font-family:"JetBrains Mono",monospace;font-size:.72rem;font-weight:700;color:var(--ink3);
+  align-self:center;text-align:center}
+.q .qt{font-weight:700;font-size:.95rem}
+.q .qd{font-size:.86rem;color:var(--ink2);margin-top:2px}
+.q .qd code{font-size:.8rem;background:var(--panel2);padding:1px 5px;border-radius:5px}
+.state{font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:99px;white-space:nowrap;align-self:center}
+.state.done{background:var(--mintsoft);color:var(--ok)}
+.state.now{background:var(--lilacsoft);color:var(--accent)}
+.state.todo{background:var(--panel2);color:var(--ink3)}
+
+footer{margin-top:82px;padding-top:20px;border-top:1px solid var(--line);
+  display:flex;flex-wrap:wrap;gap:12px;align-items:baseline;font-size:.82rem;color:var(--ink3)}
+
+@media (max-width:620px){
+  h1{font-size:2.6rem} h2{font-size:1.42rem} .wrap{padding:0 18px 70px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+<header class="stack">
+  <div class="eyebrow">Design study &middot; nothing built yet</div>
+  <div class="brandrow">
+    <h1>Confetti</h1>
+    <div class="sub">a cozy editor for <span class="mono" style="font-size:.95rem">unrealircd.conf</span></div>
+  </div>
+  <p class="lede col">UnrealIRCd's config is nested blocks all the way down. So Confetti draws them as nested trays &mdash; boxes inside boxes you can fold shut, arrange how you like, and read without knowing a single directive name. The real file sits alongside, updating as you go.</p>
+  <div class="chips">
+    <span class="chip hi">Windows + Linux</span>
+    <span class="chip hi">Local &amp; SSH</span>
+    <span class="chip hi">Files only</span>
+    <span class="chip">Trays inside trays</span>
+    <span class="chip">Plain names, real names underneath</span>
+    <span class="chip">configtest + rehash</span>
+    <span class="chip">Docs matched to your server's version</span>
+  </div>
+</header>
+
+<!-- ============ 01 WORKSPACE ============ -->
+<section>
+  <div class="stack col">
+    <div class="eyebrow">01 &middot; The workspace</div>
+    <h2>Boxes inside boxes, and the file beside them</h2>
+    <p>Every block is a tray. Open one and its children are trays too, each a shade deeper into the cream, each with a slightly tighter corner and an edge that darkens to keep pace &mdash; so you can tell how deep you are without counting. Fold any of them shut and the header keeps telling you what's inside.</p>
+    <p>The right-hand panel is your actual file. Touch a value in a tray and the matching line lights up and rewrites itself; type in the file and the trays follow. Neither side is the "real" one.</p>
+  </div>
+
+  <div class="bleed">
+  <div class="render">
+    <div class="tbar">
+      <div class="logo">&#127881;</div>
+      <div class="name">Confetti</div>
+      <div class="conn"><span class="dot"></span> irc.example.com &middot; SSH</div>
+      <div class="spacer"></div>
+      <div class="btn ghost">Focus</div>
+      <div class="btn">Fold all</div>
+      <div class="btn">Check config</div>
+      <div class="btn go">Rehash</div>
+    </div>
+
+    <div class="body3">
+      <!-- rail -->
+      <div class="pane">
+        <div class="panehead">Blocks</div>
+        <div class="search">&#9906; <span>search&hellip;</span></div>
+        <div class="cat on"><span class="sw" style="background:#D9C89A"></span><span class="n">Rules</span><span class="cnt">168</span></div>
+        <div class="cat"><span class="sw" style="background:#F2C3A6"></span><span class="n">Who you are</span><span class="cnt">2</span></div>
+        <div class="cat"><span class="sw" style="background:#A9D69A"></span><span class="n">Getting in</span><span class="cnt">4</span></div>
+        <div class="cat"><span class="sw" style="background:#CBB4EC"></span><span class="n">Your staff</span><span class="cnt">3</span></div>
+        <div class="cat"><span class="sw" style="background:#93C3D6"></span><span class="n">Other servers</span><span class="cnt">5</span></div>
+        <div class="cat"><span class="sw" style="background:#E9A7B4"></span><span class="n">Keeping order</span><span class="cnt">15</span></div>
+        <div class="cat"><span class="sw" style="background:#B7C9E0"></span><span class="n">Logs &amp; extras</span><span class="cnt">9</span></div>
+        <div class="spacer"></div>
+        <div class="btn" style="text-align:center">+ Add a block</div>
+      </div>
+
+      <!-- canvas of trays -->
+      <div class="canvas">
+        <div class="wsbar"><span class="t">unrealircd.conf</span><span class="r"></span><span class="t">17 blocks</span></div>
+        <div class="wscols">
+          <div class="wscol">
+
+            <!-- depth 1 -->
+            <div class="tray">
+              <div class="th">
+                <span class="chev">&#9662;</span>
+                <span class="ic" style="background:#EFE3C4">&#9878;</span>
+                <span class="nm"><span class="p">House rules</span><span class="r">set</span></span>
+                <span class="sum"><span class="pips"><i class="on"></i><i></i><i></i><i></i><i></i></span></span>
+              </div>
+              <div class="kids">
+
+                <!-- depth 2 -->
+                <div class="tray d2">
+                  <div class="th">
+                    <span class="chev">&#9662;</span>
+                    <span class="ic" style="background:#F6D9CB">&#9888;</span>
+                    <span class="nm"><span class="p">Flood limits</span><span class="r">set::anti-flood</span></span>
+                    <span class="sum"><span class="pips"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></span>
+                  </div>
+                  <div class="kids">
+
+                    <!-- depth 3 -->
+                    <div class="tray d3">
+                      <div class="th">
+                        <span class="chev">&#9662;</span>
+                        <span class="ic" style="background:#DCE9F1">&#9679;</span>
+                        <span class="nm"><span class="p">Applies to everyone</span><span class="r">everyone</span></span>
+                        <span class="sum"><span class="pips"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span></span>
+                      </div>
+                      <div class="kids">
+                        <div class="leaf">
+                          <span class="nm"><span class="p">New connections</span><span class="r">connect-flood</span></span>
+                          <span class="val">3 / 60s</span>
+                        </div>
+
+                        <!-- depth 4 -->
+                        <div class="tray d4">
+                          <div class="th">
+                            <span class="chev">&#9662;</span>
+                            <span class="ic" style="background:#F0DCE3">&#8644;</span>
+                            <span class="nm"><span class="p">Garbage before hello</span><span class="r">handshake-data-flood</span></span>
+                            <span class="sum"><span class="pips"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></span>
+                          </div>
+                          <div class="kids">
+                            <div class="leaf">
+                              <span class="nm"><span class="p">How much is too much</span><span class="r">amount</span></span>
+                              <span class="val">4k</span></div>
+                            <div class="leaf">
+                              <span class="nm"><span class="p">Then do this</span><span class="r">ban-action</span></span>
+                              <span class="val edit">zline &#9662;</span></div>
+                            <div class="leaf">
+                              <span class="nm"><span class="p">For how long</span><span class="r">ban-time</span></span>
+                              <span class="val">5m</span></div>
+                          </div>
+                        </div>
+
+                        <!-- depth 4 collapsed, with depth-5 inside -->
+                        <div class="tray d4">
+                          <div class="th">
+                            <span class="chev">&#9656;</span>
+                            <span class="ic" style="background:#E3EFD8">&#9678;</span>
+                            <span class="nm"><span class="p">Message floods</span><span class="r">target-flood</span></span>
+                            <span class="sum">6 limits <span class="pips"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="tray d3">
+                      <div class="th"><span class="chev">&#9656;</span>
+                        <span class="ic" style="background:#E3EFD8">&#9733;</span>
+                        <span class="nm"><span class="p">People we know</span><span class="r">known-users</span></span>
+                        <span class="sum">8 limits <span class="pips"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span></span></div>
+                    </div>
+                    <div class="tray d3">
+                      <div class="th"><span class="chev">&#9656;</span>
+                        <span class="ic" style="background:#F0E4CE">&#9734;</span>
+                        <span class="nm"><span class="p">Everyone else</span><span class="r">unknown-users</span></span>
+                        <span class="sum">8 limits <span class="pips"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span></span></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="tray d2 warn">
+                  <div class="th"><span class="chev">&#9656;</span>
+                    <span class="ic" style="background:#F6E2C4">&#9911;</span>
+                    <span class="nm"><span class="p">Hiding people's addresses</span><span class="r">set::cloak-keys</span></span>
+                    <span class="sum"><span class="flag">&#9888; example keys</span></span></div>
+                </div>
+                <div class="tray d2">
+                  <div class="th"><span class="chev">&#9656;</span>
+                    <span class="ic" style="background:#DCE9F1">&#9919;</span>
+                    <span class="nm"><span class="p">Encryption</span><span class="r">set::tls</span></span>
+                    <span class="sum">11 set <span class="pips"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></span></div>
+                </div>
+                <div class="tray d2">
+                  <div class="th"><span class="chev">&#9656;</span>
+                    <span class="ic" style="background:#E6DDF4">&#9781;</span>
+                    <span class="nm"><span class="p">Switches</span><span class="r">set::options</span></span>
+                    <span class="sum">3 on <span class="pips"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="wscol">
+            <div class="tray">
+              <div class="th"><span class="chev">&#9662;</span>
+                <span class="ic" style="background:#F6D9CB">&#8962;</span>
+                <span class="nm"><span class="p">Who we are</span><span class="r">me</span></span></div>
+              <div class="kids">
+                <div class="leaf"><span class="nm"><span class="p">Server name</span><span class="r">name</span></span>
+                  <span class="val">irc.example.com</span></div>
+                <div class="leaf"><span class="nm"><span class="p">One-line description</span><span class="r">info</span></span>
+                  <span class="val">ExampleNET</span></div>
+                <div class="leaf"><span class="nm"><span class="p">Network ID</span><span class="r">sid</span></span>
+                  <span class="val">001</span></div>
+              </div>
+            </div>
+
+            <div class="tray">
+              <div class="th"><span class="chev">&#9662;</span>
+                <span class="ic" style="background:#DDEDCF">&#9919;</span>
+                <span class="nm"><span class="p">The front door</span><span class="r">listen</span></span>
+                <span class="sum">2 open</span></div>
+              <div class="kids">
+                <div class="tray d2">
+                  <div class="th"><span class="chev">&#9662;</span>
+                    <span class="ic" style="background:#DDEDCF">&#9919;</span>
+                    <span class="nm"><span class="p">Port 6697</span><span class="r">listen &middot; *:6697</span></span></div>
+                  <div class="kids">
+                    <div class="tray d3">
+                      <div class="th"><span class="chev">&#9662;</span>
+                        <span class="ic" style="background:#E6DDF4">&#9781;</span>
+                        <span class="nm"><span class="p">Switches</span><span class="r">options</span></span></div>
+                      <div class="kids">
+                        <div class="leaf"><span class="nm"><span class="p">Encrypted</span><span class="r">tls</span></span>
+                          <span class="val">on</span></div>
+                        <div class="leaf"><span class="nm"><span class="p">People only, no servers</span><span class="r">clientsonly</span></span>
+                          <span class="val">on</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tray d2">
+                  <div class="th"><span class="chev">&#9656;</span>
+                    <span class="ic" style="background:#F0E4CE">&#9920;</span>
+                    <span class="nm"><span class="p">Port 6667</span><span class="r">listen &middot; *:6667</span></span>
+                    <span class="sum">not encrypted</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tray sel">
+              <div class="th"><span class="chev">&#9656;</span>
+                <span class="ic" style="background:#E6DDF4">&#9733;</span>
+                <span class="nm"><span class="p">Valware</span><span class="r">oper Valware</span></span>
+                <span class="sum">netadmin</span></div>
+            </div>
+
+            <div class="tray">
+              <div class="th"><span class="chev">&#9656;</span>
+                <span class="ic" style="background:#DCE9F1">&#8644;</span>
+                <span class="nm"><span class="p">Services</span><span class="r">link services.example.com</span></span>
+                <span class="sum">outgoing</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- the file -->
+      <div class="pane right">
+        <div class="filehead"><span class="panehead">The file</span><span class="spacer"></span>
+          <span class="fn">unrealircd.conf</span></div>
+        <div class="filebody">
+          <div class="fl"><span class="ln">418</span><span><span class="fk">set</span> {</span></div>
+          <div class="fl"><span class="ln">419</span><span>&nbsp;&nbsp;<span class="fk">anti-flood</span> {</span></div>
+          <div class="fl"><span class="ln">420</span><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="fk">everyone</span> {</span></div>
+          <div class="fl"><span class="ln">421</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connect-flood 3:60;</span></div>
+          <div class="fl"><span class="ln">422</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fk">handshake-data-flood</span> {</span></div>
+          <div class="fl"><span class="ln">423</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;amount 4k;</span></div>
+          <div class="fl hl"><span class="ln">424</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ban-action zline;</span></div>
+          <div class="fl"><span class="ln">425</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ban-time 5m;</span></div>
+          <div class="fl"><span class="ln">426</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></div>
+          <div class="fl"><span class="ln">427</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fc">/* see also: target-flood */</span></span></div>
+          <div class="fl"><span class="ln">428</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fk">target-flood</span> {</span></div>
+          <div class="fl"><span class="ln">429</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;channel-privmsg 45:5;</span></div>
+          <div class="fl"><span class="ln">430</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private-privmsg 30:5;</span></div>
+          <div class="fl"><span class="ln">431</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></div>
+          <div class="fl"><span class="ln">432</span><span>&nbsp;&nbsp;&nbsp;&nbsp;}</span></div>
+          <div class="fl"><span class="ln">&nbsp;</span><span class="fc">&nbsp;</span></div>
+          <div class="fl"><span class="ln">506</span><span>&nbsp;&nbsp;<span class="fk">cloak-keys</span> {</span></div>
+          <div class="fl warnl"><span class="ln">507</span><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="fs">"Oozahho1raezoh0iMee4&hellip;"</span>;</span></div>
+          <div class="fl warnl"><span class="ln">508</span><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="fs">"and another one"</span>;</span></div>
+          <div class="fl warnl"><span class="ln">509</span><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="fs">"and another one"</span>;</span></div>
+          <div class="fl"><span class="ln">510</span><span>&nbsp;&nbsp;}</span></div>
+          <div class="fl"><span class="ln">511</span><span>}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="console">
+      <div class="head"><span class="dot"></span> Check config &middot; ./unrealircd configtest</div>
+      <div class="cd">Loading IRCd configuration&hellip;</div>
+      <div class="cw">unrealircd.conf:508 &mdash; two of your three cloak keys are the example text. Anyone could work out your users' real addresses. <span class="cd">[ Make new ones ]</span></div>
+      <div class="cg">No errors. Safe to rehash.</div>
+    </div>
+
+    <div class="sbar">
+      <span class="dot"></span><span>irc.example.com</span>
+      <span class="mono">conf/unrealircd.conf</span>
+      <span>3 unsaved changes</span>
+      <span class="spacer"></span>
+      <span>Setup 4 / 7</span><span class="meter"><i></i></span>
+    </div>
+  </div>
+  </div>
+
+  <div class="twoup">
+    <div class="box"><span class="stamp">Tray header</span><h3>Never a bare arrow</h3>
+      <p>Chevron, icon, plain name, real name, and &mdash; when it's shut &mdash; a summary of what's inside. <span class="mono">8 limits</span>, <span class="mono">2 open</span>, <span class="mono">not encrypted</span>. Folding something away never costs you information about it.</p></div>
+    <div class="box"><span class="stamp">Depth</span><h3>Five dots, always</h3>
+      <p>Every tray header carries five pips with the filled ones showing how deep you are. Redundant with the tint and the corner radius on purpose &mdash; three signals for the same fact, so none of them has to be caught.</p></div>
+    <div class="box"><span class="stamp">Arranging</span><h3>It stays where you put it</h3>
+      <p>Top-level trays are yours to drag around the canvas, and the layout is saved next to the config, not inside it. Nothing ever auto-arranges, reflows, or animates on its own.</p></div>
+    <div class="box"><span class="stamp">Focus</span><h3>One branch, nothing else</h3>
+      <p><kbd>F</kbd> on any tray and it fills the workspace &mdash; siblings gone, not dimmed, with a breadcrumb back. The single most useful control on the screen when a config has 17 blocks and you care about one.</p></div>
+  </div>
+</section>
+
+<!-- ============ 02 DEPTH ============ -->
+<section>
+  <div class="stack col">
+    <div class="eyebrow">02 &middot; How deep it actually goes</div>
+    <h2>Five levels. That's the whole ceiling.</h2>
+    <p>Worth knowing before drawing anything, because it decides whether nested trays are a tidy finite design or an infinite-recursion problem. It's finite. UnrealIRCd's parser declares exactly four generations of child iterator &mdash; <span class="mono">ce</span>, <span class="mono">cep</span>, <span class="mono">cepp</span>, <span class="mono">ceppp</span> &mdash; and there is no <span class="mono">cepppp</span> anywhere in the source. A block plus four levels inside it is the hard limit.</p>
+  </div>
+
+  <div class="depthgrid">
+    <div class="dcell a"><span class="n">5</span><span class="l">levels, maximum, ever</span></div>
+    <div class="dcell b"><span class="n">252</span><span class="l">places the parser reads a great-grandchild (<span class="mono">ceppp</span>)</span></div>
+    <div class="dcell c"><span class="n">0</span><span class="l">places it reads deeper than that</span></div>
+    <div class="dcell d"><span class="n">~12</span><span class="l">spots in the whole config that reach level 4 or 5</span></div>
+  </div>
+
+  <div class="col stack" style="margin-top:34px">
+    <h3>And nearly everything is shallow</h3>
+    <p class="note">Depth of the 183 directive paths the documentation gives its own heading to:</p>
+  </div>
+  <div class="bars">
+    <div class="bar"><span class="bl">1 level</span><span class="bt" style="width:35.6%"></span><span class="bn">37</span></div>
+    <div class="bar"><span class="bl">2 levels</span><span class="bt" style="width:100%"></span><span class="bn">104</span></div>
+    <div class="bar"><span class="bl">3 levels</span><span class="bt" style="width:38.5%"></span><span class="bn">40</span></div>
+    <div class="bar"><span class="bl">4 levels</span><span class="bt" style="width:1.9%"></span><span class="bn">2</span></div>
+  </div>
+
+  <div class="col stack" style="margin-top:30px">
+    <p>So the deep case is real but rare, and it lives in a handful of known places. You can name them, hand-check that each looks right, and be finished &mdash; rather than building a general renderer and hoping.</p>
+  </div>
+
+  <pre class="code"><span class="c">/* every place a real config gets to level 5 */</span>
+
+<span class="k">set</span> { restrict-commands { list { except { connect-time 60; } } } }      <span class="c">example.conf:572</span>
+<span class="k">set</span> { anti-flood { everyone { handshake-data-flood { amount 4k; } } } }
+<span class="k">set</span> { tls { options { fail-if-no-clientcert; } } }
+<span class="k">listen</span> { options { websocket { allow-origin { kiwiirc.com; } } } }
+<span class="k">link</span> { outgoing { tls-options { options { &hellip; } } } }
+<span class="k">operclass</span> locop { permissions { channel { override { flood; } } } }   <span class="c">operclass.default.conf:25</span>
+<span class="k">spamfilter</span> { &hellip; }                                                  <span class="c">spamfilter.conf:127</span></pre>
+
+  <div class="twoup">
+    <div class="box"><span class="stamp">Exception</span><h3>Operclass permissions want their own thing</h3>
+      <p>It's the one deep structure that isn't a handful of settings &mdash; it's a wide tree of dozens of tiny on/off permissions. Five nested trays would be miserable. Give it a proper permission tree with checkboxes and inheritance shown, and treat it as a special case from the start.</p></div>
+    <div class="box"><span class="stamp">Design</span><h3>Five tiers, hand-tuned</h3>
+      <p>Because the ceiling is five, each tier gets a designed look rather than a generated one: its own cream tint, corner radius, border weight and header size, checked side by side. A sixth tier can't happen, so nothing has to degrade gracefully.</p></div>
+  </div>
+</section>
+
+<!-- ============ 03 SPLIT ============ -->
+<section>
+  <div class="stack col">
+    <div class="eyebrow">03 &middot; Two ways to say the same thing</div>
+    <h2>Open a tray properly and it reads as a sentence</h2>
+    <p>Values inside a tray are chips in running text, not fields in a form &mdash; because <span class="mono">amount 4k; ban-action zline; ban-time 5m;</span> is three facts about <em>one</em> decision, and a form pretends they're three separate ones. Click a chip, change it, watch the file change.</p>
+  </div>
+
+  <div class="bleed">
+  <div class="render narrow">
+    <div class="tbar">
+      <div class="logo">&#127881;</div>
+      <div class="name">Garbage before hello</div>
+      <span class="mono" style="font-size:10px;color:var(--ink3)">set::anti-flood::everyone::handshake-data-flood</span>
+      <div class="spacer"></div>
+      <div class="btn ghost">&#9166; back</div>
+    </div>
+    <div class="split">
+      <div class="sleft">
+        <span class="panehead">In words</span>
+        <p class="sent">If someone throws more than <span class="ch live">4k</span> of data at us before they've even said hello, <span class="ch sel">ban their IP &#9662;</span> for <span class="ch">5m</span>.</p>
+        <div style="height:1px;background:var(--line)"></div>
+        <span class="panehead">Ban their IP means</span>
+        <p class="note" style="font-size:11.5px;margin:0">A <span class="mono">zline</span> &mdash; the connection is refused before UnrealIRCd does any work on it at all. Cheaper than a kline, and the right choice for something this early.</p>
+        <span class="mono" style="font-size:9px;color:var(--ink3)">wiki &middot; Anti-flood settings</span>
+        <div class="spacer"></div>
+        <div style="display:flex;gap:6px">
+          <span class="val edit">zline</span><span class="val">gline</span><span class="val">kline</span><span class="val">soft-kline</span>
+        </div>
+      </div>
+      <div class="sright">
+        <div class="filehead"><span class="panehead">In the file</span><span class="spacer"></span>
+          <span class="fn">unrealircd.conf</span></div>
+        <div class="filebody">
+          <div class="fl"><span class="ln">420</span><span><span class="fk">everyone</span> {</span></div>
+          <div class="fl"><span class="ln">421</span><span>&nbsp;&nbsp;connect-flood 3:60;</span></div>
+          <div class="fl"><span class="ln">422</span><span>&nbsp;&nbsp;<span class="fk">handshake-data-flood</span> {</span></div>
+          <div class="fl hl"><span class="ln">423</span><span>&nbsp;&nbsp;&nbsp;&nbsp;amount 4k;</span></div>
+          <div class="fl warnl"><span class="ln">424</span><span>&nbsp;&nbsp;&nbsp;&nbsp;ban-action zline;</span></div>
+          <div class="fl hl"><span class="ln">425</span><span>&nbsp;&nbsp;&nbsp;&nbsp;ban-time 5m;</span></div>
+          <div class="fl"><span class="ln">426</span><span>&nbsp;&nbsp;}</span></div>
+          <div class="fl"><span class="ln">427</span><span>}</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="sbar"><span>Editing a chip rewrites one line. Editing a line redraws one chip.</span>
+      <span class="spacer"></span><span class="mono">two-way</span></div>
+  </div>
+  </div>
+
+  <div class="col stack" style="margin-top:30px">
+    <h3>Both names, always</h3>
+    <p>Plain name big, the real directive underneath in small mono. It costs one line and buys everything: you navigate by meaning, but the word you'd need to search the wiki, paste into a support channel, or recognise in an error message is right there. Nobody has to learn a private vocabulary that only this app speaks.</p>
+    <p class="note">The plain names are the one genuinely hand-written part of the whole project &mdash; roughly 200 of them, one per block and per commonly-edited directive. Everything else is generated. Budget a proper afternoon for the wording, and let anything unnamed simply show its real name at full size.</p>
+  </div>
+</section>
+
+<!-- ============ 04 RULES ============ -->
+<section>
+  <div class="stack col">
+    <div class="eyebrow">04 &middot; House rules</div>
+    <h2>What keeps it readable</h2>
+    <p>These aren't polish, they're the load-bearing part &mdash; a nested workspace goes bad fast without them, and each one is cheap if it's decided now rather than retrofitted.</p>
+    <ul class="tight" style="margin-top:4px">
+      <li><b>Containment, never indentation.</b> A visible box edge is unambiguous; four spaces of whitespace is something you have to measure with your eyes. Every level gets a real border.</li>
+      <li><b>Say everything three times.</b> Depth is tint <em>and</em> radius <em>and</em> pips. A problem is an amber edge <em>and</em> an icon <em>and</em> a sentence. Never colour alone &mdash; that's colourblind-safe and it's less to hold in your head.</li>
+      <li><b>Nothing moves unless you moved it.</b> No auto-layout, no reflow on open, no ambient motion, no things sliding in. A tray is where you left it, this session and next.</li>
+      <li><b>Collapsed still speaks.</b> Every folded tray shows a summary. If it can't summarise itself in four words, that's a sign the grouping is wrong.</li>
+      <li><b>Messages wait for you.</b> No toasts that disappear, no timed anything. Warnings sit in the console until dismissed, and dismissing is a click, not a countdown.</li>
+      <li><b>One branch at a time is always available.</b> Focus mode isn't an extra &mdash; it's the escape hatch when the whole workspace is too much at once.</li>
+      <li><b>Density is a setting.</b> Comfortable by default, with roomier and tighter available, because the right amount of visual information genuinely differs person to person.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 05 SCHEMA ============ -->
+<section>
+  <div class="stack col">
+    <div class="eyebrow">05 &middot; Where the words come from</div>
+    <h2>Both halves already ship in the repo</h2>
+    <p>A config editor is only worth using if it knows what every directive means, and hand-writing four hundred descriptions would rot within a release. It doesn't have to. UnrealIRCd answers this twice over, in its own source tree.</p>
+  </div>
+
+  <div class="twoup">
+    <div class="box" style="background:var(--mintsoft)"><span class="stamp">Structure</span>
+      <h3 class="mono" style="font-size:.9rem">src/conf.c + 46 modules</h3>
+      <p>440 comparisons of the form <span class="mono">strcmp(cep-&gt;name, "&hellip;")</span>. Scrape them at build time and you have every block, every directive and exactly how they nest &mdash; taken from the parser itself, so it cannot disagree with the server.</p></div>
+    <div class="box" style="background:var(--skysoft)"><span class="stamp">Meaning</span>
+      <h3 class="mono" style="font-size:.9rem">doc/unrealircd_wiki.zim</h3>
+      <p>428 articles in a 1.4&nbsp;MB archive sitting in the source tree. <span class="mono">Configuration/en</span> alone is the complete reference, with one heading per directive &mdash; literally <span class="mono">set::anti-flood</span>, <span class="mono">class::sendq</span>. Bundle it and every hint works offline.</p></div>
+    <div class="box" style="background:var(--lilacsoft)"><span class="stamp">Joined on</span>
+      <h3 class="mono" style="font-size:.9rem">the :: path</h3>
+      <p>Names and nesting from the C, prose from the wiki, matched on the <span class="mono">block::item</span> notation both already use. That same path is the tray's subtitle, the search box's input, the error's jump target and what "copy path" puts on your clipboard.</p></div>
+  </div>
+
+  <div class="col stack" style="margin-top:40px">
+    <h3>Keep up by version, not by recency</h3>
+    <p>The obvious move is to ask the live wiki for the current page on each directive. Don't. The live wiki documents the <em>newest</em> UnrealIRCd &mdash; which is not the one you're configuring. It will happily describe directives your 6.1.x doesn't have and quietly drop notes about ones it does.</p>
+    <p>The ZIM is better precisely because it's frozen. It's refreshed once <em>per release</em> &mdash; the commits say so in as many words, <span class="mono">"Update doc/unrealircd_wiki.zim for 6.2.3"</span> &mdash; and it carries metadata proving which snapshot it is. So the copy sitting in a server's own tree is, by construction, the documentation for the UnrealIRCd running on that server.</p>
+  </div>
+
+  <pre class="code"><span class="c">/* metadata read straight out of the archive */</span>
+Name         unrealircd_en_all
+Date         2026-03-06
+Scraper      mwoffliner 1.17.3-dev0
+Counter      text/html=357  image/png=18  text/css=9  &hellip;
+
+<span class="c">/* so on connect, Confetti resolves a docs pack */</span>
+<span class="k">1.</span> ./unrealircd version                   <span class="c">&rarr; 6.2.3</span>
+<span class="k">2.</span> look for doc/unrealircd_wiki.zim
+     beside the install, and one level up    <span class="c">&rarr; found, Date 2026-03-06</span>
+<span class="k">3.</span> exact match. use it.                    <span class="c">&rarr; hints are this server's hints</span></pre>
+
+  <div class="twoup">
+    <div class="box"><span class="stamp">Caveat</span><h3>It isn't in the installed tree</h3>
+      <p><span class="mono">make install</span> copies six doc files and the ZIM isn't among them &mdash; it lives in the source directory you built from. That's usually still sitting on the box, since UnrealIRCd's own upgrade script builds in place. Usually isn't always.</p></div>
+    <div class="box"><span class="stamp">Fallback</span><h3>Ship packs, fetch by version</h3>
+      <p>When it isn't there &mdash; a Windows installer box, a tidied-up server &mdash; fall back to a cached pack keyed by release, fetching that release's pack if it's missing. That's the automation worth having: fetch <em>6.2.1's</em> docs for a 6.2.1 server, never "the latest".</p></div>
+    <div class="box"><span class="stamp">Fallback</span><h3>Say when it's approximate</h3>
+      <p>If the closest pack is 6.2.1 and the server is 6.2.3, the hint panel says so in a line, once, rather than presenting a guess as fact. Same for a directive the schema knows but the docs don't mention.</p></div>
+    <div class="box"><span class="stamp">Bonus</span><h3>The schema pins too</h3>
+      <p>A pack is a pair &mdash; the ZIM plus the schema scraped from <em>that release's</em> <span class="mono">conf.c</span>. Pinning both together is what makes the whole version-drift problem go away instead of moving it.</p></div>
+  </div>
+
+  <div class="col stack" style="margin-top:40px">
+    <h3>The hand-written layer</h3>
+    <p>On top sits the only part needing judgement: about thirty value types the docs imply but never formalise. Each is a chip that can't be got wrong.</p>
+  </div>
+
+  <div class="tblwrap">
+  <table class="tbl">
+    <thead><tr><th>Type</th><th>Looks like</th><th>The chip does</th></tr></thead>
+    <tbody>
+      <tr><td><b>rate</b></td><td><code>3:60</code></td><td>Reads as "3 per 60 seconds"; two spinners when you open it</td></tr>
+      <tr><td><b>size</b></td><td><code>200k</code> <code>20M</code></td><td>Number plus unit; warns when a server queue looks client-sized</td></tr>
+      <tr><td><b>duration</b></td><td><code>5m</code> <code>90</code></td><td>Shows the bare-seconds equivalent, since some directives take both</td></tr>
+      <tr><td><b>mask</b></td><td><code>*@*.example.net</code></td><td>Repeatable, and flips to the richer forms &mdash; <code>certfp</code>, <code>account</code>, <code>country</code></td></tr>
+      <tr><td><b>port</b></td><td><code>6697</code> <code>6667-6669</code></td><td>Takes ranges; flags a port another listen block already claimed</td></tr>
+      <tr><td><b>password</b></td><td><code>{ argon2; }</code></td><td>Auth-type picker ranked by the wiki's own security column, plus a button that runs <code>mkpasswd</code> on the server</td></tr>
+      <tr><td><b>flags</b></td><td><code>options { tls; }</code></td><td>Exactly the flags that block permits, as toggles. No typing, nothing to misspell</td></tr>
+      <tr><td><b>reference</b></td><td><code>class opers;</code></td><td>Dropdown of the blocks in your own config, plus "make one" when it's empty</td></tr>
+      <tr><td><b>modes</b></td><td><code>+cFfkQGqso</code></td><td>Named checklist of real user, channel and snomask letters</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p class="callout" style="margin-top:26px">Within a pack the two halves can still disagree in the small &mdash; a directive added late, an article not yet written. Rule: the C decides <em>whether a directive exists</em>, the wiki decides <em>what it means</em>. A scraped directive with no article shows its file and line in <span class="mono">conf.c</span> rather than an empty panel. The wiki text is CC-BY, so hints carry an attribution line.</p>
+</section>
+
+<!-- ============ 06 FILE ============ -->
+<section>
+  <div class="stack col">
+    <div class="eyebrow">06 &middot; Getting to the file</div>
+    <h2>Local and remote are one screen</h2>
+    <p><b>This computer</b> is always in the list, and every SSH host you add sits beside it. Pick one, browse, open. Nothing downstream knows or cares which it was.</p>
+    <p>The tree does one thing a file browser doesn't: it reads the <span class="mono">include</span> lines. An UnrealIRCd config is rarely one file &mdash; the shipped example pulls in six &mdash; so you see the real set, nested under whatever includes them.</p>
+  </div>
+
+  <div class="bleed">
+  <div class="render narrow">
+    <div class="tbar"><div class="logo">&#127881;</div><div class="name">Open a config</div>
+      <div class="spacer"></div><div class="btn">Add a server</div></div>
+    <div style="display:grid;grid-template-columns:186px 1fr">
+      <div class="pane">
+        <div class="panehead">Where</div>
+        <div class="cat"><span class="sw" style="background:#D9C89A"></span><span class="n">This computer</span></div>
+        <div class="cat on"><span class="sw" style="background:#A9D69A"></span><span class="n">example.com</span><span class="cnt">SSH</span></div>
+        <div class="cat"><span class="sw" style="background:#93C3D6"></span><span class="n">test-box</span><span class="cnt">SSH</span></div>
+      </div>
+      <div class="pane" style="border-right:none">
+        <div class="panehead">/home/irc/unrealircd</div>
+        <div class="tree">
+          <div class="tnode"><span class="g">&#9662;</span> conf/</div>
+          <div class="tnode i1 sel"><span class="g">&#9679;</span> unrealircd.conf <span class="meta">pulls in 6 more</span></div>
+          <div class="tnode i2"><span class="g">&#8627;</span> modules.default.conf</div>
+          <div class="tnode i2"><span class="g">&#8627;</span> help/help.conf</div>
+          <div class="tnode i2"><span class="g">&#8627;</span> badwords.conf</div>
+          <div class="tnode i2"><span class="g">&#8627;</span> operclass.default.conf</div>
+          <div class="tnode i2"><span class="g">&#8627;</span> snomasks.default.conf</div>
+          <div class="tnode i2" style="opacity:.55"><span class="g">&#8853;</span> spamfilter.conf <span class="meta">commented out</span></div>
+          <div class="tnode i1"><span class="g">&#9675;</span> tls/</div>
+          <div class="tnode"><span class="g">&#9656;</span> logs/</div>
+          <div class="tnode"><span class="g">&#9675;</span> unrealircd <span class="meta">control script &middot; found</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="sbar"><span class="dot"></span><span>Connected as irc</span>
+      <span class="spacer"></span><span>UnrealIRCd 6.2.0</span></div>
+  </div>
+  </div>
+
+  <div class="twoup">
+    <div class="box"><span class="stamp">On connect</span><h3>Finding the control script</h3>
+      <p>Looks for <span class="mono">./unrealircd</span> beside <span class="mono">conf/</span>, or <span class="mono">bin\unrealircdctl.exe</span> on Windows, and runs <span class="mono">version</span> once. That answer picks the schema version and unlocks the buttons. Not found is fine &mdash; you get an editor.</p></div>
+    <div class="box"><span class="stamp">Edge case</span><h3>Includes over HTTPS</h3>
+      <p>UnrealIRCd can include a URL. Those appear with a globe and open read-only, because the file lives on someone else's web server. Saying so plainly beats a mysterious failure to save.</p></div>
+  </div>
+</section>
+
+<!-- ============ 07 WORKBENCH ============ -->
+<section>
+  <div class="stack col">
+    <div class="eyebrow">07 &middot; The workbench</div>
+    <h2>The shell buys more than file access</h2>
+    <p>Files only was the right call &mdash; JSON-RPC needs the server already running, which is exactly when you don't need this app. But once there's a shell, the <span class="mono">unrealircd</span> control script is sitting right there, and it does considerably more than rehash.</p>
+  </div>
+
+  <div class="tblwrap">
+  <table class="tbl">
+    <thead><tr><th>Button</th><th>Linux</th><th>Windows</th><th>What it's for</th></tr></thead>
+    <tbody>
+      <tr><td><b>Check config</b></td><td><code>./unrealircd configtest</code></td><td><code>unrealircdctl configtest</code></td><td>The main event. Parses without applying, so it's safe any time. Errors carry file, line and <span class="mono">::</span> path &mdash; enough to open the right tray and highlight the right chip.</td></tr>
+      <tr><td><b>Rehash</b></td><td><code>./unrealircd rehash</code></td><td><code>unrealircdctl rehash</code></td><td>Apply. Runs a check first, every time, and won't go if it fails or anything is unsaved.</td></tr>
+      <tr><td><b>Hash a password</b></td><td><code>&hellip; mkpasswd argon2</code></td><td><code>&hellip; mkpasswd argon2</code></td><td>Sits under every password chip. The plaintext goes to the server's stdin and never reaches your config file.</td></tr>
+      <tr><td><b>New cloak keys</b></td><td><code>./unrealircd gencloak</code></td><td><code>unrealircdctl gencloak</code></td><td>Three real keys straight into the tray. Clears the amber warning and quest 5 in one click.</td></tr>
+      <tr><td><b>Block for the other side</b></td><td><code>&hellip; genlinkblock</code></td><td>&mdash;</td><td>Generates the matching link block for the server you're connecting to, ready to send. Linking is what people get wrong most.</td></tr>
+      <tr><td><b>Status</b></td><td><code>./unrealircd status</code></td><td><code>unrealircdctl status</code></td><td>The green dot. Running, or not.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p class="callout" style="margin-top:26px">Nothing here writes to your config except the two generators, and both drop their result into a chip you can see before saving. <span class="mono">stop</span> and <span class="mono">restart</span> are deliberately not wired to anything.</p>
+</section>
+
+<!-- ============ 08 QUESTS ============ -->
+<section>
+  <div class="stack col">
+    <div class="eyebrow">08 &middot; The quest line</div>
+    <h2>Get a server on the air</h2>
+    <p>The shipped <span class="mono">example.conf</span> already contains a quest line &mdash; seven <span class="mono">CHANGE THIS</span> markers scattered through it, with a note at the top telling you to Ctrl+F for them. Confetti makes them a list and checks them for real. Every step is a condition on your config, so nothing can be ticked by clicking. No points, no XP &mdash; just "this is still the example value".</p>
+  </div>
+
+  <div class="quests">
+    <div class="q"><span class="num">1</span>
+      <div><div class="qt">Name your server</div>
+        <div class="qd"><code>me::name</code> and <code>me::info</code> still say <code>irc.example.org</code> and <code>ExampleNET Server</code>.</div></div>
+      <span class="state done">done</span></div>
+    <div class="q"><span class="num">2</span>
+      <div><div class="qt">Say who to contact</div>
+        <div class="qd">Three lines in <code>admin</code>, still Bob Smith's.</div></div>
+      <span class="state done">done</span></div>
+    <div class="q"><span class="num">3</span>
+      <div><div class="qt">Open a door people can reach</div>
+        <div class="qd">At least one <code>listen</code> block. Nudges toward 6697 with <code>options { tls; }</code>, and points at <code>mkcert</code> if there's no certificate yet.</div></div>
+      <span class="state done">done</span></div>
+    <div class="q"><span class="num">4</span>
+      <div><div class="qt">Make yourself an operator</div>
+        <div class="qd">An <code>oper</code> block whose password isn't plaintext and whose <code>mask</code> isn't just <code>*</code>. The example's is both.</div></div>
+      <span class="state done">done</span></div>
+    <div class="q"><span class="num">5</span>
+      <div><div class="qt">Generate your own cloak keys</div>
+        <div class="qd">Keys 2 and 3 in the example are the literal words <code>"and another one"</code>. One button fixes it.</div></div>
+      <span class="state now">up next</span></div>
+    <div class="q"><span class="num">6</span>
+      <div><div class="qt">Set the network name</div>
+        <div class="qd"><code>network-name</code>, <code>default-server</code>, <code>help-channel</code> &mdash; the four-item group the example marks as one job.</div></div>
+      <span class="state todo">to do</span></div>
+    <div class="q"><span class="num">7</span>
+      <div><div class="qt">Check it, then rehash</div>
+        <div class="qd">A clean <code>configtest</code>. Can't be skipped, and until it passes once the meter stops at six.</div></div>
+      <span class="state todo">to do</span></div>
+  </div>
+
+  <div class="twoup">
+    <div class="box"><span class="stamp">Tone</span><h3>Quiet once it's done</h3>
+      <p>The meter lives in the status bar, never a modal. At 7 / 7 it shrinks to a small mark and stays out of the way. A second run &mdash; linking to another server &mdash; is something you opt into, not something that appears.</p></div>
+    <div class="box"><span class="stamp">Tone</span><h3>Warnings that sound like a person</h3>
+      <p>"Two of your three cloak keys are the example text &mdash; anyone could work out your users' real addresses" beats "set::cloak-keys: weak key". Same severity; one of them tells you why to care.</p></div>
+  </div>
+</section>
+
+<!-- ============ 09 ROUND TRIP ============ -->
+<section>
+  <div class="stack col">
+    <div class="eyebrow">09 &middot; The hard part</div>
+    <h2>Never hand back a file you wouldn't recognise</h2>
+    <p>This kind of tool earns trust once and loses it the first time it eats a comment. The shipped example is two thirds comments &mdash; carefully written ones, plus whatever you added at 3am. So the parser can't be an ordinary parser.</p>
+    <ul class="tight" style="margin-top:4px">
+      <li><b>Parse to a lossless tree, not an AST.</b> Every comment, blank line, tab and choice between <code>#</code> and <code>//</code> is a node with a byte range. Re-serialising an untouched file returns it byte for byte &mdash; that's the first test to write, run over every <code>.conf</code> in <code>doc/conf/</code>.</li>
+      <li><b>Edit the smallest range that works.</b> Changing a chip rewrites the bytes of that one value. Lines you didn't touch are never reformatted, however wrong their indentation looks.</li>
+      <li><b>New blocks land at the end of the file they belong to</b>, indented to match that file's own style, with one comment line saying what added them and when.</li>
+      <li><b>Deleting comments out first.</b> The tray goes struck-through, the block gets commented; a real delete takes a second confirm.</li>
+      <li><b>Diff before write, always.</b> Not buried &mdash; it's the first thing Save shows you, over SFTP exactly as locally.</li>
+      <li><b>Write atomically, keep one backup.</b> Temp file, fsync, rename, and <code>unrealircd.conf~</code> alongside. A half-written config on a live server is the worst outcome available.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 10 BUILD ============ -->
+<section>
+  <div class="stack col">
+    <div class="eyebrow">10 &middot; If you build it</div>
+    <h2>Order, and what will bite</h2>
+    <p>Each step is usable on its own, which matters &mdash; the schema work is the long pole and you want something in your hands while it runs.</p>
+    <ol class="tight" style="margin-top:4px">
+      <li><b>The lossless parser and its round-trip test.</b> Nothing else is safe to build on. It either passes on every shipped config or it isn't done.</li>
+      <li><b>The scraper and the pack format.</b> <code>conf.c</code> and the 46 modules to a skeleton schema, a ZIM reader for the prose, and the resolver that picks a pack from <code>unrealircd version</code>. The ZIM format is small and well documented &mdash; a reader is a couple of hundred lines.</li>
+      <li><b>Five tiers of tray, on real data.</b> Point it at <code>example.conf</code> and draw it. This is where the design is proved or isn't, and it needs no SSH, no schema types, no editing.</li>
+      <li><b>Chips and the two-way file panel.</b> Types, plain names, editing, diff, save.</li>
+      <li><b>SSH and SFTP.</b> Connection manager, tree, remote save.</li>
+      <li><b>Workbench and quests.</b> Both are thin once there's a shell.</li>
+    </ol>
+  </div>
+
+  <div class="twoup">
+    <div class="box"><span class="stamp">Risk</span><h3>SSH auth on Windows</h3>
+      <p>Don't shell out to <code>ssh</code>. You've been bitten by git-bash's ssh not seeing the Windows agent &mdash; same trap, one layer down. Use a library that speaks the protocol in-process and talks to the agent itself, with key file and password as first-class options.</p></div>
+    <div class="box"><span class="stamp">Risk</span><h3>A box with no ZIM</h3>
+      <p>Docs packs solve version drift, but only where a pack exists. Windows installer boxes have no source tree at all. Build the fallback chain in step 2, not later &mdash; and always keep an unknown directive editable as raw text rather than hiding or dropping it.</p></div>
+    <div class="box"><span class="stamp">Risk</span><h3>Multiple set blocks</h3>
+      <p>Two or three <code>set</code> blocks is normal and correct, and 6.1.1 added per-security-group overrides like <code>set unknown-users { }</code>. Draw one tray per block as written &mdash; never merge them &mdash; and let search be how you find a setting.</p></div>
+    <div class="box"><span class="stamp">Shell</span><h3>What to build it in</h3>
+      <p>Tauri gives you a Rust core for SSH, SFTP and the parser, a web front end you can theme exactly like ircuitry, and small binaries on both Windows and Linux. Electron works too and buys the Node ecosystem &mdash; at the cost of shipping a browser.</p></div>
+  </div>
+</section>
+
+<footer>
+  <span>Design study. Nothing has been built.</span>
+  <span class="spacer"></span>
+  <span>Structure and hints derive from UnrealIRCd's own source and its bundled wiki (CC-BY).</span>
+</footer>
+
+</div>
+</body>
+</html>

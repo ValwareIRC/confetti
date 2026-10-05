@@ -1,0 +1,854 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Confetti — five redesigns</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&display=swap">
+<style>
+/* ============================================================
+   Page shell. Each mockup below carries its own palette, scoped
+   to its wrapper, so the five can disagree with each other.
+   ============================================================ */
+:root{
+  --page:#F4F1EA; --card:#FFFDF8; --ink:#2E2A26; --ink2:#6B6259; --ink3:#9A9086;
+  --line:#DFD8CB; --line2:#C9C0B0; --accent:#7B5EA7;
+  --ui:"Nunito",ui-rounded,"Segoe UI Variable Text","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono","Cascadia Mono",Consolas,ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:15px/1.6 var(--ui)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 26px 100px}
+h1,h2,h3{margin:0;font-weight:600;text-wrap:balance}
+h1{font-family:"Fredoka",var(--ui);font-size:2.9rem;letter-spacing:-.02em;line-height:1.05}
+h2{font-family:"Fredoka",var(--ui);font-size:1.6rem;letter-spacing:-.01em}
+h3{font-size:1rem}
+p{margin:0}
+code{font-family:var(--mono);font-size:.85em;background:#EAE4D8;padding:1px 5px;border-radius:5px}
+.stack{display:flex;flex-direction:column;gap:16px}
+.col{max-width:66ch}
+.eyebrow{font-family:var(--mono);font-size:.66rem;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink3)}
+.lede{font-size:1.05rem;color:var(--ink2)}
+header{padding:60px 0 10px}
+section{padding-top:70px}
+hr{border:0;border-top:1px solid var(--line);margin:0}
+
+.musts{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:22px}
+.must{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+.must b{display:block;font-size:.9rem;margin-bottom:2px}
+.must span{font-size:.84rem;color:var(--ink2)}
+
+.dhead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.dnum{font-family:var(--mono);font-size:.8rem;font-weight:700;color:var(--ink3)}
+.spectrum{margin-left:auto;font-size:.74rem;font-weight:700;padding:3px 10px;border-radius:99px;
+  background:#EAE4D8;color:var(--ink2);white-space:nowrap}
+.frame{margin-top:20px;overflow-x:auto;padding-bottom:4px}
+.frame::-webkit-scrollbar{height:9px}
+.frame::-webkit-scrollbar-thumb{background:var(--line2);border-radius:99px}
+
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:18px}
+.note{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px;
+  display:flex;flex-direction:column;gap:5px}
+.note .k{font-family:var(--mono);font-size:.6rem;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink3)}
+.note p{font-size:.86rem;color:var(--ink2)}
+.cost{border-color:#E2CDBC;background:#FDF6F0}
+
+table.cmp{width:100%;border-collapse:collapse;font-size:.87rem;margin-top:24px}
+table.cmp th{text-align:left;font-family:var(--mono);font-size:.62rem;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink3);padding:0 12px 8px 0;border-bottom:1px solid var(--line2)}
+table.cmp td{padding:10px 12px 10px 0;border-bottom:1px solid var(--line);vertical-align:top}
+table.cmp tr:last-child td{border-bottom:none}
+.cmpwrap{overflow-x:auto}
+.cmpwrap table{min-width:720px}
+
+/* shared mockup frame */
+.mock{border-radius:14px;overflow:hidden;border:1px solid var(--line2);
+  box-shadow:0 20px 44px -30px rgba(46,42,38,.55);min-width:980px}
+
+/* ============================================================
+   1. BOARD
+   ============================================================ */
+.d1{--bg:#F3F0E8;--pan:#FFFFFF;--ink:#26221E;--ink2:#6C6359;--ln:#E3DCCE;
+  font-family:var(--ui);background:var(--bg);color:var(--ink);font-size:12.5px}
+.d1 .top{display:flex;align-items:center;gap:8px;padding:9px 12px;background:#EFEADF;
+  border-bottom:1px solid var(--ln)}
+.d1 .brand{font-family:"Fredoka";font-size:14px;font-weight:600}
+.d1 .files{display:flex;gap:6px;margin-left:10px}
+.d1 .f{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:8px;
+  background:#fff;border:1px solid var(--ln);font-weight:700;font-size:11px}
+.d1 .f.on{background:#2E2A26;color:#fff;border-color:#2E2A26}
+.d1 .f i{width:6px;height:6px;border-radius:2px;display:block}
+.d1 .f b{font-weight:400;opacity:.55}
+.d1 .sp{flex:1}
+.d1 .btn{padding:4px 11px;border-radius:8px;border:1px solid var(--ln);background:#fff;
+  font-weight:700;font-size:11px}
+.d1 .btn.go{background:#2E2A26;color:#fff;border-color:#2E2A26}
+.d1 .body{display:grid;grid-template-columns:186px 1fr;min-height:452px}
+.d1 .tree{background:#FAF7F0;border-right:1px solid var(--ln);padding:10px;font-size:11.5px}
+.d1 .cols{display:flex;gap:10px;padding:12px;overflow:hidden}
+.d1 .colm{width:212px;flex:none;display:flex;flex-direction:column;gap:8px}
+.d1 .ch{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:9px;font-weight:800;font-size:11.5px}
+.d1 .ch .ic{width:19px;height:19px;border-radius:6px;display:grid;place-items:center;
+  background:rgba(255,255,255,.7);font-size:11px}
+.d1 .ch .n{flex:1}
+.d1 .ch .c{font-family:var(--mono);font-size:10px;opacity:.65}
+.d1 .cd{font-size:10px;color:var(--ink2);padding:0 3px 2px;line-height:1.35}
+.d1 .card{background:#fff;border:1px solid var(--ln);border-radius:10px;padding:8px 9px;
+  display:flex;flex-direction:column;gap:5px;box-shadow:0 2px 5px -4px rgba(0,0,0,.4)}
+.d1 .card .t{display:flex;align-items:baseline;gap:6px}
+.d1 .card .ty{font-family:var(--mono);font-size:11px;font-weight:700}
+.d1 .card .lb{font-size:11.5px;font-weight:700}
+.d1 .card .fb{margin-left:auto;font-family:var(--mono);font-size:8.5px;color:#9A9086}
+.d1 .pills{display:flex;flex-wrap:wrap;gap:4px}
+.d1 .pill{font-family:var(--mono);font-size:9.5px;background:#F2EEE5;border-radius:5px;padding:1px 5px;color:#5C544B}
+.d1 .add{border:1px dashed var(--ln);border-radius:10px;padding:7px;text-align:center;
+  color:#9A9086;font-weight:700;font-size:11px;background:rgba(255,255,255,.5)}
+.d1 .drag{border:2px dashed #7B5EA7;background:#F3EEFA}
+.d1 .newcol{width:180px;flex:none;border:1px dashed var(--ln);border-radius:10px;
+  display:grid;place-items:center;color:#9A9086;font-weight:700;font-size:11.5px}
+
+/* file tree shared-ish */
+.tr{display:flex;flex-direction:column;gap:1px;font-family:var(--mono)}
+.tr .row{display:flex;align-items:center;gap:6px;padding:2.5px 6px;border-radius:6px;white-space:nowrap}
+.tr .row.sel{background:#2E2A26;color:#fff}
+.tr .row.dim{opacity:.5}
+.tr .g{width:9px;text-align:center;opacity:.55}
+.tr .cnt{margin-left:auto;font-size:9px;opacity:.55}
+.tr .i1{padding-left:18px} .tr .i2{padding-left:32px}
+.tr .fold{font-weight:700}
+
+/* ============================================================
+   2. FOLIO
+   ============================================================ */
+.d2{--bg:#F7F2E7;--pan:#FFFCF4;--ink:#3A322A;--ink2:#7C7064;--ln:#E6DBC7;
+  font-family:var(--ui);background:var(--bg);color:var(--ink);font-size:12.5px}
+.d2 .tabs{display:flex;align-items:flex-end;gap:3px;padding:9px 12px 0;background:#EFE7D6}
+.d2 .tab{padding:6px 14px 7px;border-radius:9px 9px 0 0;background:#E3D8C2;font-weight:700;
+  font-size:11.5px;color:#7C7064;border:1px solid var(--ln);border-bottom:none;
+  display:flex;align-items:center;gap:7px}
+.d2 .tab.on{background:var(--pan);color:var(--ink)}
+.d2 .tab .dot{width:7px;height:7px;border-radius:99px;display:block}
+.d2 .tab .n{font-family:var(--mono);font-size:10px;opacity:.6}
+.d2 .body{display:grid;grid-template-columns:200px 1fr;min-height:462px;background:var(--pan);
+  border-top:1px solid var(--ln)}
+.d2 .tree{background:#FBF6EA;border-right:1px solid var(--ln);padding:11px;font-size:11.5px}
+.d2 .main{padding:14px;display:flex;flex-direction:column;gap:15px;overflow:hidden}
+.d2 .band{display:flex;gap:11px}
+.d2 .spine{width:7px;border-radius:99px;flex:none}
+.d2 .bandbody{flex:1;display:flex;flex-direction:column;gap:8px;min-width:0}
+.d2 .bh{display:flex;align-items:center;gap:9px}
+.d2 .bh .ic{width:26px;height:26px;border-radius:9px;display:grid;place-items:center;font-size:14px}
+.d2 .bh .tt{font-family:"Fredoka";font-size:15px;font-weight:600}
+.d2 .bh .ds{font-size:10.5px;color:var(--ink2)}
+.d2 .bh .cl{margin-left:auto;font-size:10px;color:var(--ink2);font-weight:700}
+.d2 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.d2 .bk{background:#fff;border:1px solid var(--ln);border-radius:12px;padding:10px 11px;
+  display:flex;flex-direction:column;gap:6px;position:relative;overflow:hidden}
+.d2 .bk .cap{height:4px;position:absolute;left:0;right:0;top:0}
+.d2 .bk .hd{display:flex;align-items:center;gap:8px;margin-top:3px}
+.d2 .bk .ic{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;font-size:15px;flex:none}
+.d2 .bk .nm{display:flex;flex-direction:column;line-height:1.15;min-width:0}
+.d2 .bk .p{font-size:13px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.d2 .bk .r{font-family:var(--mono);font-size:9px;color:#A79B8C}
+.d2 .facts{display:flex;flex-direction:column;gap:2px}
+.d2 .fact{display:flex;gap:6px;font-size:10.5px}
+.d2 .fact .k{color:var(--ink2);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.d2 .fact .v{margin-left:auto;font-family:var(--mono);font-weight:700;white-space:nowrap}
+.d2 .addcard{border:1px dashed var(--ln);border-radius:12px;display:grid;place-items:center;
+  color:#A79B8C;font-weight:800;font-size:11.5px;min-height:88px;background:rgba(255,255,255,.45)}
+
+/* ============================================================
+   3. CONSOLE
+   ============================================================ */
+.d3{--bg:#14161A;--pan:#1B1E24;--ink:#E4E7EC;--ink2:#98A2B3;--ln:#2A2F38;
+  font-family:"Space Grotesk",var(--ui);background:var(--bg);color:var(--ink);font-size:12.5px}
+.d3 .top{display:flex;align-items:center;gap:9px;padding:8px 12px;background:#181B21;border-bottom:1px solid var(--ln)}
+.d3 .cmd{flex:1;display:flex;align-items:center;gap:8px;background:#0F1115;border:1px solid var(--ln);
+  border-radius:7px;padding:4px 10px;font-family:var(--mono);font-size:11.5px;color:var(--ink2)}
+.d3 .cmd b{color:#7DD3A0;font-weight:400}
+.d3 .kbd{font-family:var(--mono);font-size:9.5px;border:1px solid var(--ln);border-radius:4px;
+  padding:1px 5px;color:var(--ink2)}
+.d3 .body{display:grid;grid-template-columns:216px 1fr 250px;min-height:452px}
+.d3 .tree{background:#171A1F;border-right:1px solid var(--ln);padding:10px;font-size:11.5px}
+.d3 .tr .row.sel{background:#243044;color:#CFE3FF}
+.d3 .main{padding:8px 0;overflow:hidden}
+.d3 .grp{display:flex;align-items:center;gap:8px;padding:6px 12px 4px;font-size:10px;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--ink2)}
+.d3 .grp .sw{width:8px;height:8px;border-radius:2px}
+.d3 .grp .rule{flex:1;height:1px;background:var(--ln)}
+.d3 .ln{display:flex;align-items:center;gap:10px;padding:3px 12px;font-family:var(--mono);font-size:11.5px}
+.d3 .ln:hover{background:#1F242C}
+.d3 .ln.on{background:#243044}
+.d3 .rail{width:3px;height:15px;border-radius:2px;flex:none}
+.d3 .ty{color:#C4B5FD;min-width:78px}
+.d3 .lb{color:#E4E7EC;font-weight:700;min-width:112px}
+.d3 .sum{color:var(--ink2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.d3 .fl{color:#5C6675;font-size:9.5px}
+.d3 .kid{padding-left:34px;color:var(--ink2)}
+.d3 .kid .k{color:#8FA3BF;min-width:120px}
+.d3 .kid .v{color:#E4E7EC}
+.d3 .insp{background:#171A1F;border-left:1px solid var(--ln);padding:11px;display:flex;
+  flex-direction:column;gap:9px}
+.d3 .lab{font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink2)}
+.d3 .fld{background:#0F1115;border:1px solid var(--ln);border-radius:6px;padding:4px 8px;
+  font-family:var(--mono);font-size:11px}
+.d3 .row2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.d3 .hint{font-size:10.5px;color:var(--ink2);line-height:1.45}
+
+/* ============================================================
+   4. ATLAS
+   ============================================================ */
+.d4{--bg:#F2F4F1;--pan:#FFFFFF;--ink:#25302B;--ink2:#66766E;--ln:#DCE4DE;
+  font-family:var(--ui);background:var(--bg);color:var(--ink);font-size:12.5px}
+.d4 .body{display:grid;grid-template-columns:296px 1fr;min-height:492px}
+.d4 .map{background:#EDF1EC;border-right:1px solid var(--ln);padding:11px;display:flex;
+  flex-direction:column;gap:10px;overflow:hidden}
+.d4 .mh{display:flex;align-items:center;gap:7px;font-size:10px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink2)}
+.d4 .fileblk{background:#fff;border:1px solid var(--ln);border-radius:9px;overflow:hidden}
+.d4 .fileblk .fn{display:flex;align-items:center;gap:6px;padding:5px 8px;background:#F7FAF7;
+  border-bottom:1px solid var(--ln);font-family:var(--mono);font-size:10.5px;font-weight:700}
+.d4 .fileblk .fn .c{margin-left:auto;font-weight:400;color:#8FA096;font-size:9.5px}
+.d4 .chips{display:flex;flex-wrap:wrap;gap:3px;padding:6px}
+.d4 .chip{height:15px;border-radius:4px;display:flex;align-items:center;padding:0 6px;
+  font-family:var(--mono);font-size:9px;font-weight:700;color:#22302A}
+.d4 .chip.on{outline:2px solid #25302B;outline-offset:1px}
+.d4 .main{padding:16px 18px;display:flex;flex-direction:column;gap:13px;overflow:hidden}
+.d4 .crumb{font-family:var(--mono);font-size:10.5px;color:var(--ink2)}
+.d4 .title{display:flex;align-items:center;gap:11px}
+.d4 .title .ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:19px}
+.d4 .title h4{margin:0;font-family:"Fredoka";font-size:20px;font-weight:600}
+.d4 .title .sub{font-family:var(--mono);font-size:10.5px;color:var(--ink2)}
+.d4 .fields{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.d4 .fl{background:#fff;border:1px solid var(--ln);border-radius:10px;padding:8px 10px;
+  display:flex;flex-direction:column;gap:3px}
+.d4 .fl .k{font-size:10px;color:var(--ink2)}
+.d4 .fl .v{font-family:var(--mono);font-size:13px;font-weight:700}
+.d4 .fl .h{font-size:10px;color:#8FA096;line-height:1.35}
+.d4 .fl.wide{grid-column:1/-1}
+.d4 .crits{display:flex;flex-direction:column;gap:5px}
+.d4 .crit{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--ln);
+  border-radius:8px;padding:5px 9px}
+.d4 .crit .k{font-family:var(--mono);font-size:11px;font-weight:700;min-width:118px}
+.d4 .crit .d{font-size:10.5px;color:var(--ink2);flex:1}
+.d4 .crit .v{font-family:var(--mono);font-size:11px;font-weight:700;background:#E8F3EA;
+  border-radius:5px;padding:1px 8px}
+
+/* ============================================================
+   5. WORKBENCH
+   ============================================================ */
+.d5{--bg:#EDE6DA;--ink:#332C24;--ink2:#6F6455;--ln:#D5CAB8;
+  font-family:var(--ui);color:var(--ink);font-size:12.5px;
+  background:
+    radial-gradient(circle at 1px 1px, #D8CFBF 1px, transparent 0) 0 0/16px 16px,
+    var(--bg)}
+.d5 .top{display:flex;align-items:center;gap:9px;padding:9px 12px;background:#E3DACA;
+  border-bottom:1px solid var(--ln)}
+.d5 .board{position:relative;min-height:436px;padding:14px}
+.d5 .region{position:absolute;border:2px dashed rgba(0,0,0,.16);border-radius:16px;padding:26px 12px 12px}
+.d5 .rtab{position:absolute;top:-13px;left:12px;display:flex;align-items:center;gap:7px;
+  padding:3px 11px;border-radius:8px;font-weight:800;font-size:11px;color:#241F19}
+.d5 .rtab .ic{font-size:12px}
+.d5 .rdesc{position:absolute;top:8px;right:12px;font-size:9.5px;color:var(--ink2)}
+.d5 .mod{width:172px;background:#FFFDF7;border:1px solid var(--ln);border-radius:10px;
+  overflow:hidden;box-shadow:0 4px 10px -6px rgba(51,44,36,.6)}
+.d5 .mod .bar{display:flex;align-items:center;gap:6px;padding:4px 8px;font-family:var(--mono);
+  font-size:10.5px;font-weight:700;color:#241F19}
+.d5 .mod .in{padding:6px 9px 8px;display:flex;flex-direction:column;gap:4px}
+.d5 .mod .lb{font-size:12.5px;font-weight:800}
+.d5 .mod .kv{display:flex;gap:6px;font-size:10px;color:var(--ink2)}
+.d5 .mod .kv b{margin-left:auto;font-family:var(--mono);color:var(--ink);font-weight:700}
+.d5 .port{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9px;color:#8A7C68}
+.d5 .port i{width:6px;height:6px;border-radius:99px;background:#B9A88C;display:block}
+.d5 .trays{display:flex;gap:8px;padding:10px 12px;background:#E3DACA;border-top:1px solid var(--ln)}
+.d5 .tray{flex:1;border:1px dashed var(--ln);border-radius:9px;padding:6px 9px;background:rgba(255,255,255,.45)}
+.d5 .tray .n{font-family:var(--mono);font-size:10.5px;font-weight:700}
+.d5 .tray .c{font-size:9.5px;color:var(--ink2)}
+.d5 .tray.hot{border:2px solid #7B5EA7;background:#F3EEFA}
+.d5 .collapsed{width:132px;background:#FFFDF7;border:1px solid var(--ln);border-radius:10px;
+  padding:8px;display:flex;align-items:center;gap:7px;box-shadow:0 4px 10px -6px rgba(51,44,36,.6)}
+.d5 .collapsed .n{font-weight:800;font-size:11.5px;line-height:1.2}
+.d5 .collapsed .c{font-size:9.5px;color:var(--ink2)}
+
+footer{margin-top:80px;padding-top:20px;border-top:1px solid var(--line);
+  font-size:.84rem;color:var(--ink3)}
+@media (max-width:640px){h1{font-size:2rem}.wrap{padding:0 16px 60px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="stack">
+  <div class="eyebrow">Confetti · redesign · five directions</div>
+  <h1>Five ways this could look</h1>
+  <p class="lede col">The first attempt borrowed ircuitry's cream chrome but left its colour behind, so everything landed in the same beige register — five identical white bars where an <code>oper</code> should be instantly distinguishable from a <code>security-group</code>. These five all fix that, and all do the things the first one couldn't: add a block, move a block, group blocks into categories you define, and work across every <code>.conf</code> in the folder rather than one file at a time.</p>
+
+  <div class="musts">
+    <div class="must"><b>Every file, as a tree</b><span>Everything under <code>conf/</code> and its subfolders — <code>help/</code>, <code>aliases/</code> — not one file at a time. Point at <code>unrealircd/</code> or at <code>conf/</code> and it finds them either way.</span></div>
+    <div class="must"><b>Identity at a glance</b><span>Block type readable without reading. Colour on the whole card, not a 17px glyph.</span></div>
+    <div class="must"><b>Add · move · reorder</b><span>New blocks, dragging between categories, dragging between files.</span></div>
+    <div class="must"><b>Your own categories</b><span>Name, colour, icon, description. Collapse the whole group to one tile.</span></div>
+  </div>
+
+  <p class="note col" style="margin-top:20px;font-size:.92rem;color:var(--ink2)">The bar is that Syzop should want to use it. That rules out anything that reads as a toy — so where these get playful, it's in warmth and colour rather than in pretending config isn't config. All five keep the real directive names visible and the file itself one keystroke away.</p>
+</header>
+
+<!-- ==================== 1 ==================== -->
+<section>
+  <div class="dhead">
+    <span class="dnum">01</span>
+    <h2>Board</h2>
+    <span class="spectrum">bold · drag-first</span>
+  </div>
+  <p class="col">Columns are your categories. Cards are blocks. You drag a card to another column to recategorise it, or onto a file chip at the top to move it to that file. The thing you asked for most — moving blocks around — is the whole metaphor rather than a feature bolted on.</p>
+
+  <div class="frame">
+  <div class="mock d1">
+    <div class="top">
+      <span class="brand">🎊 Confetti</span>
+      <div class="files">
+        <span class="f on"><i style="background:#7DD3A0"></i>unrealircd.conf <b>12</b></span>
+        <span class="f"><i style="background:#C4B5FD"></i>opers.conf <b>3</b></span>
+        <span class="f drag"><i style="background:#FBBF77"></i>network.conf <b>5</b></span>
+        <span class="f"><i style="background:#F0A0A8"></i>spamfilter.conf <b>7</b></span>
+      </div>
+      <span class="sp"></span>
+      <span class="btn">Check config</span>
+      <span class="btn go">+ Add block</span>
+    </div>
+    <div class="body">
+      <div class="tree">
+        <div class="eyebrow" style="margin-bottom:7px">conf/</div>
+        <div class="tr">
+          <div class="row fold"><span class="g">▾</span>conf<span class="cnt">27</span></div>
+          <div class="row i1 sel"><span class="g">●</span>unrealircd.conf<span class="cnt">12</span></div>
+          <div class="row i1"><span class="g">○</span>opers.conf<span class="cnt">3</span></div>
+          <div class="row i1"><span class="g">○</span>network.conf<span class="cnt">5</span></div>
+          <div class="row i1"><span class="g">○</span>spamfilter.conf<span class="cnt">7</span></div>
+          <div class="row i1 dim"><span class="g">○</span>badwords.conf</div>
+          <div class="row i1 fold"><span class="g">▾</span>help</div>
+          <div class="row i2"><span class="g">○</span>help.conf</div>
+          <div class="row i1 fold"><span class="g">▸</span>aliases<span class="cnt">9</span></div>
+          <div class="row i1 fold"><span class="g">▸</span>examples</div>
+          <div class="row i1 dim"><span class="g">▸</span>tls</div>
+        </div>
+      </div>
+      <div class="cols">
+        <div class="colm">
+          <div class="ch" style="background:#FBE0CC"><span class="ic">⌂</span><span class="n">Identity</span><span class="c">2</span></div>
+          <div class="cd">Who this server says it is</div>
+          <div class="card"><div class="t"><span class="ty">me</span><span class="fb">unrealircd.conf</span></div>
+            <div class="pills"><span class="pill">irc.example.com</span><span class="pill">sid 001</span></div></div>
+          <div class="card"><div class="t"><span class="ty">admin</span><span class="fb">unrealircd.conf</span></div>
+            <div class="pills"><span class="pill">3 lines</span></div></div>
+          <div class="add">+ block</div>
+        </div>
+
+        <div class="colm">
+          <div class="ch" style="background:#D3EFC8"><span class="ic">⚿</span><span class="n">Doors &amp; limits</span><span class="c">4</span></div>
+          <div class="cd">Ports people reach you on, and how hard they may push</div>
+          <div class="card"><div class="t"><span class="ty">listen</span><span class="lb">*:6697</span></div>
+            <div class="pills"><span class="pill">tls</span><span class="pill">clientsonly</span></div></div>
+          <div class="card"><div class="t"><span class="ty">listen</span><span class="lb">*:6667</span></div>
+            <div class="pills"><span class="pill">plain</span></div></div>
+          <div class="card"><div class="t"><span class="ty">class</span><span class="lb">clients</span></div>
+            <div class="pills"><span class="pill">sendq 200k</span><span class="pill">recvq 8000</span><span class="pill">1000 max</span></div></div>
+          <div class="card"><div class="t"><span class="ty">class</span><span class="lb">opers</span></div>
+            <div class="pills"><span class="pill">sendq 1M</span><span class="pill">50 max</span></div></div>
+          <div class="add">+ block</div>
+        </div>
+
+        <div class="colm">
+          <div class="ch" style="background:#F5CDD2"><span class="ic">🛡</span><span class="n">Anti-abuse</span><span class="c">4</span></div>
+          <div class="cd">Yours — spam, floods and who gets trusted</div>
+          <div class="card"><div class="t"><span class="ty">security-group</span><span class="fb">network.conf</span></div>
+            <div class="t"><span class="lb">trusted-bots</span></div>
+            <div class="pills"><span class="pill">priority 50</span><span class="pill">2 accounts</span></div></div>
+          <div class="card drag"><div class="t"><span class="ty">set</span><span class="lb">anti-flood</span><span class="fb">→ network.conf</span></div>
+            <div class="pills"><span class="pill">3 groups</span><span class="pill">18 limits</span></div></div>
+          <div class="card"><div class="t"><span class="ty">spamfilter</span><span class="fb">spamfilter.conf</span></div>
+            <div class="pills"><span class="pill">regex</span><span class="pill">gline</span></div></div>
+          <div class="add">+ block</div>
+        </div>
+
+        <div class="newcol">+ New category</div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="notes">
+    <div class="note"><span class="k">Identity</span><p>Category colour fills the column head; the card carries the real directive name in mono as its loudest element, with key values as pills. You read <code>class clients · sendq 200k</code> without opening anything.</p></div>
+    <div class="note"><span class="k">Moving things</span><p>Drag between columns to recategorise, drag onto a file chip to move files. Shown mid-drag above: <code>set anti-flood</code> heading for <code>network.conf</code>.</p></div>
+    <div class="note"><span class="k">The tree</span><p>Left rail, always there, with per-file block counts. Greyed rows are files with nothing in them yet or non-config folders like <code>tls/</code>.</p></div>
+    <div class="note cost"><span class="k">What it costs</span><p>A column shows one category, so a whole config never fits on screen at once. Deep nesting (<code>set::anti-flood::everyone</code>) has to open in a panel — the card can only summarise.</p></div>
+  </div>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section>
+  <div class="dhead">
+    <span class="dnum">02</span>
+    <h2>Folio</h2>
+    <span class="spectrum">cozy, far bolder</span>
+  </div>
+  <p class="col">The current app with its volume turned all the way up. Files become physical folder tabs. Categories become bands with a coloured spine, an icon and your description. Blocks become substantial cards with a saturated icon and their two or three most telling values — not a row of grey text.</p>
+
+  <div class="frame">
+  <div class="mock d2">
+    <div class="tabs">
+      <span class="tab on"><span class="dot" style="background:#7DBB6B"></span>unrealircd.conf <span class="n">12</span></span>
+      <span class="tab"><span class="dot" style="background:#9B7FD4"></span>opers.conf <span class="n">3</span></span>
+      <span class="tab"><span class="dot" style="background:#E0913F"></span>network.conf <span class="n">5</span></span>
+      <span class="tab"><span class="dot" style="background:#D4707C"></span>spamfilter.conf <span class="n">7</span></span>
+      <span class="tab" style="opacity:.6">+</span>
+    </div>
+    <div class="body">
+      <div class="tree">
+        <div class="eyebrow" style="margin-bottom:7px">/home/irc/unrealircd</div>
+        <div class="tr">
+          <div class="row fold"><span class="g">▾</span>conf<span class="cnt">27</span></div>
+          <div class="row i1 sel"><span class="g">●</span>unrealircd.conf<span class="cnt">12</span></div>
+          <div class="row i1"><span class="g">○</span>opers.conf<span class="cnt">3</span></div>
+          <div class="row i1"><span class="g">○</span>network.conf<span class="cnt">5</span></div>
+          <div class="row i1"><span class="g">○</span>spamfilter.conf<span class="cnt">7</span></div>
+          <div class="row i1"><span class="g">○</span>badwords.conf</div>
+          <div class="row i1"><span class="g">○</span>operclass.default.conf</div>
+          <div class="row i1"><span class="g">○</span>snomasks.default.conf</div>
+          <div class="row i1 fold"><span class="g">▾</span>help</div>
+          <div class="row i2"><span class="g">○</span>help.conf</div>
+          <div class="row i1 fold"><span class="g">▾</span>aliases<span class="cnt">9</span></div>
+          <div class="row i2"><span class="g">○</span>anope.conf</div>
+          <div class="row i2"><span class="g">○</span>atheme.conf</div>
+          <div class="row i2 dim"><span class="g">○</span>…7 more</div>
+          <div class="row i1 fold"><span class="g">▸</span>examples</div>
+        </div>
+      </div>
+
+      <div class="main">
+        <div class="band">
+          <div class="spine" style="background:#E0913F"></div>
+          <div class="bandbody">
+            <div class="bh">
+              <span class="ic" style="background:#FBE0CC">⌂</span>
+              <span><span class="tt">Identity</span> <span class="ds">— who this server says it is</span></span>
+              <span class="cl">▾ fold</span>
+            </div>
+            <div class="grid">
+              <div class="bk"><span class="cap" style="background:#E0913F"></span>
+                <div class="hd"><span class="ic" style="background:#FBE0CC">⌂</span>
+                  <span class="nm"><span class="p">This server</span><span class="r">me</span></span></div>
+                <div class="facts">
+                  <div class="fact"><span class="k">name</span><span class="v">irc.example.com</span></div>
+                  <div class="fact"><span class="k">sid</span><span class="v">001</span></div></div></div>
+              <div class="bk"><span class="cap" style="background:#E0913F"></span>
+                <div class="hd"><span class="ic" style="background:#FBE0CC">✉</span>
+                  <span class="nm"><span class="p">Contact</span><span class="r">admin</span></span></div>
+                <div class="facts"><div class="fact"><span class="k">3 lines</span><span class="v">bob</span></div></div></div>
+              <div class="addcard">+ add</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="band">
+          <div class="spine" style="background:#7DBB6B"></div>
+          <div class="bandbody">
+            <div class="bh">
+              <span class="ic" style="background:#DCEFD2">⚿</span>
+              <span><span class="tt">Doors &amp; limits</span> <span class="ds">— ports, and how hard people may push</span></span>
+              <span class="cl">▾ fold</span>
+            </div>
+            <div class="grid">
+              <div class="bk"><span class="cap" style="background:#7DBB6B"></span>
+                <div class="hd"><span class="ic" style="background:#DCEFD2">🔒</span>
+                  <span class="nm"><span class="p">Port 6697</span><span class="r">listen</span></span></div>
+                <div class="facts">
+                  <div class="fact"><span class="k">encrypted</span><span class="v">yes</span></div>
+                  <div class="fact"><span class="k">people only</span><span class="v">yes</span></div></div></div>
+              <div class="bk"><span class="cap" style="background:#7DBB6B"></span>
+                <div class="hd"><span class="ic" style="background:#DCEFD2">🚪</span>
+                  <span class="nm"><span class="p">Port 6667</span><span class="r">listen</span></span></div>
+                <div class="facts"><div class="fact"><span class="k">encrypted</span><span class="v">no</span></div></div></div>
+              <div class="bk"><span class="cap" style="background:#7DBB6B"></span>
+                <div class="hd"><span class="ic" style="background:#DCEFD2">👥</span>
+                  <span class="nm"><span class="p">clients</span><span class="r">class</span></span></div>
+                <div class="facts">
+                  <div class="fact"><span class="k">sendq</span><span class="v">200k</span></div>
+                  <div class="fact"><span class="k">recvq</span><span class="v">8000</span></div>
+                  <div class="fact"><span class="k">max</span><span class="v">1000</span></div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="band">
+          <div class="spine" style="background:#D4707C"></div>
+          <div class="bandbody">
+            <div class="bh">
+              <span class="ic" style="background:#F7D8DC">🛡</span>
+              <span><span class="tt">Anti-abuse</span> <span class="ds">— your category · spam, floods, who gets trusted</span></span>
+              <span class="cl">▾ fold</span>
+            </div>
+            <div class="grid">
+              <div class="bk"><span class="cap" style="background:#D4707C"></span>
+                <div class="hd"><span class="ic" style="background:#F7D8DC">★</span>
+                  <span class="nm"><span class="p">trusted-bots</span><span class="r">security-group</span></span></div>
+                <div class="facts">
+                  <div class="fact"><span class="k">priority</span><span class="v">50</span></div>
+                  <div class="fact"><span class="k">accounts</span><span class="v">2</span></div></div></div>
+              <div class="bk"><span class="cap" style="background:#D4707C"></span>
+                <div class="hd"><span class="ic" style="background:#F7D8DC">⚡</span>
+                  <span class="nm"><span class="p">Flood limits</span><span class="r">set::anti-flood</span></span></div>
+                <div class="facts">
+                  <div class="fact"><span class="k">groups</span><span class="v">3</span></div>
+                  <div class="fact"><span class="k">limits</span><span class="v">18</span></div></div></div>
+              <div class="addcard">+ add</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="notes">
+    <div class="note"><span class="k">Identity</span><p>A saturated icon tile plus a coloured cap on every card, and the plain name at 13px bold with the real directive underneath. The three most telling values are always on the face of the card.</p></div>
+    <div class="note"><span class="k">Moving things</span><p>Drag a card to another band to recategorise, or onto a folder tab to move it to that file. Bands fold to a single strip.</p></div>
+    <div class="note"><span class="k">The tree</span><p>Full depth, with <code>help/</code> and <code>aliases/</code> expanded and counts per file. Tabs across the top are the files you're actually working in.</p></div>
+    <div class="note cost"><span class="k">What it costs</span><p>The least dense of the five — three cards a row means a big config scrolls a long way. It's the closest to what's already built, so also the least of a leap.</p></div>
+  </div>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section>
+  <div class="dhead">
+    <span class="dnum">03</span>
+    <h2>Console</h2>
+    <span class="spectrum">expert · dense · dark</span>
+  </div>
+  <p class="col">Built for the person who already knows what <code>ceppp</code> means. One line per block, everything visible at once, colour as thin semantic rails rather than decoration, and a command bar that takes <code>set::anti-flood</code> and takes you there. This is the one Syzop would open twice.</p>
+
+  <div class="frame">
+  <div class="mock d3">
+    <div class="top">
+      <span style="font-weight:700">Confetti</span>
+      <div class="cmd">› <b>set::anti-flood</b><span style="opacity:.4">│</span></div>
+      <span class="kbd">⌘K</span>
+      <span class="kbd">⌥N new block</span>
+    </div>
+    <div class="body">
+      <div class="tree">
+        <div class="lab" style="font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:#98A2B3;margin-bottom:7px">/home/irc/unrealircd/conf</div>
+        <div class="tr">
+          <div class="row fold"><span class="g">▾</span>conf<span class="cnt">27</span></div>
+          <div class="row i1 sel"><span class="g">●</span>unrealircd.conf<span class="cnt">12</span></div>
+          <div class="row i1"><span class="g">○</span>opers.conf<span class="cnt">3</span></div>
+          <div class="row i1"><span class="g">○</span>network.conf<span class="cnt">5</span></div>
+          <div class="row i1"><span class="g">○</span>spamfilter.conf<span class="cnt">7</span></div>
+          <div class="row i1"><span class="g">○</span>badwords.conf<span class="cnt">1</span></div>
+          <div class="row i1"><span class="g">○</span>operclass.default.conf<span class="cnt">8</span></div>
+          <div class="row i1"><span class="g">○</span>snomasks.default.conf<span class="cnt">4</span></div>
+          <div class="row i1 fold"><span class="g">▾</span>help</div>
+          <div class="row i2"><span class="g">○</span>help.conf<span class="cnt">1</span></div>
+          <div class="row i1 fold"><span class="g">▾</span>aliases<span class="cnt">9</span></div>
+          <div class="row i2"><span class="g">○</span>anope.conf</div>
+          <div class="row i2"><span class="g">○</span>atheme.conf</div>
+          <div class="row i2"><span class="g">○</span>generic.conf</div>
+          <div class="row i2 dim"><span class="g">○</span>…6 more</div>
+          <div class="row i1 fold dim"><span class="g">▸</span>examples</div>
+        </div>
+      </div>
+
+      <div class="main">
+        <div class="grp"><span class="sw" style="background:#E0913F"></span>Identity<span class="rule"></span><span>2</span></div>
+        <div class="ln"><span class="rail" style="background:#E0913F"></span><span class="ty">me</span><span class="lb"></span><span class="sum">irc.example.com · sid 001 · "ExampleNET"</span><span class="fl">unrealircd.conf:72</span></div>
+        <div class="ln"><span class="rail" style="background:#E0913F"></span><span class="ty">admin</span><span class="lb"></span><span class="sum">3 lines</span><span class="fl">unrealircd.conf:82</span></div>
+
+        <div class="grp"><span class="sw" style="background:#7DBB6B"></span>Doors &amp; limits<span class="rule"></span><span>4</span></div>
+        <div class="ln"><span class="rail" style="background:#7DBB6B"></span><span class="ty">listen</span><span class="lb">*:6697</span><span class="sum">tls, clientsonly</span><span class="fl">:118</span></div>
+        <div class="ln"><span class="rail" style="background:#7DBB6B"></span><span class="ty">listen</span><span class="lb">*:6667</span><span class="sum">clientsonly</span><span class="fl">:124</span></div>
+        <div class="ln"><span class="rail" style="background:#7DBB6B"></span><span class="ty">class</span><span class="lb">clients</span><span class="sum">pingfreq 90 · maxclients 1000 · sendq 200k · recvq 8000</span><span class="fl">:96</span></div>
+        <div class="ln"><span class="rail" style="background:#7DBB6B"></span><span class="ty">class</span><span class="lb">opers</span><span class="sum">pingfreq 90 · maxclients 50 · sendq 1M</span><span class="fl">:104</span></div>
+
+        <div class="grp"><span class="sw" style="background:#D4707C"></span>Anti-abuse <span style="opacity:.5">· yours</span><span class="rule"></span><span>4</span></div>
+        <div class="ln on"><span class="rail" style="background:#D4707C"></span><span class="ty">set</span><span class="lb">anti-flood</span><span class="sum">everyone · known-users · unknown-users</span><span class="fl">network.conf:41</span></div>
+        <div class="ln kid"><span class="k">everyone</span><span class="v">connect-flood 3:60 · handshake-data-flood 4k → zline 5m</span></div>
+        <div class="ln kid"><span class="k">known-users</span><span class="v">nick-flood 3:60 · join-flood 3:90 · lag-penalty 750</span></div>
+        <div class="ln kid"><span class="k">unknown-users</span><span class="v">nick-flood 2:60 · join-flood 2:90</span></div>
+        <div class="ln"><span class="rail" style="background:#D4707C"></span><span class="ty">security-group</span><span class="lb">trusted-bots</span><span class="sum">priority 50 · account { Bot1; Bot2 } · exclude-webirc</span><span class="fl">network.conf:12</span></div>
+        <div class="ln"><span class="rail" style="background:#D4707C"></span><span class="ty">spamfilter</span><span class="lb"></span><span class="sum">regex · channel · gline · "Attempting to use a GTBot"</span><span class="fl">spamfilter.conf:127</span></div>
+      </div>
+
+      <div class="insp">
+        <span class="lab">set::anti-flood::everyone</span>
+        <span class="lab" style="color:#C4B5FD">handshake-data-flood</span>
+        <div class="row2">
+          <div><span class="lab">amount</span><div class="fld">4k</div></div>
+          <div><span class="lab">ban-time</span><div class="fld">5m</div></div>
+        </div>
+        <span class="lab">ban-action</span>
+        <div class="fld">zline ▾</div>
+        <p class="hint">Junk sent before the user has even logged in. A zline refuses the connection before UnrealIRCd does any work on it.</p>
+        <span class="lab" style="color:#5C6675">src/conf.c:8891 · wiki 2026-03-06</span>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="notes">
+    <div class="note"><span class="k">Identity</span><p>A 3px colour rail plus the directive name in a distinct hue. Type and label sit in fixed columns, so the eye runs straight down them — no hunting.</p></div>
+    <div class="note"><span class="k">Moving things</span><p>Keyboard-first: <code>⌥N</code> for a new block, drag a line onto a file in the tree, or type the destination in the command bar. Categories are the group headers.</p></div>
+    <div class="note"><span class="k">The tree</span><p>Full depth with counts, and every block line carries its <code>file:line</code> — so the tree tells you where things live and the list tells you where each one came from.</p></div>
+    <div class="note cost"><span class="k">What it costs</span><p>It stops being ircuitry's sibling. Dark and dense is a different world from cozy pastel — the warmth would live in the writing, not the surface.</p></div>
+  </div>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section>
+  <div class="dhead">
+    <span class="dnum">04</span>
+    <h2>Atlas</h2>
+    <span class="spectrum">navigation-first · calm</span>
+  </div>
+  <p class="col">A map of the whole configuration is permanently on the left — every file, every block, as small coloured chips. You never lose your place across four files, and moving a block is dragging its chip into a different file's group. The right side is one thing at a time, given proper room.</p>
+
+  <div class="frame">
+  <div class="mock d4">
+    <div class="body">
+      <div class="map">
+        <div class="mh">the whole configuration <span style="margin-left:auto;font-family:var(--mono)">27 blocks</span></div>
+
+        <div class="fileblk">
+          <div class="fn">▾ unrealircd.conf <span class="c">12</span></div>
+          <div class="chips">
+            <span class="chip" style="background:#FBE0CC">me</span>
+            <span class="chip" style="background:#FBE0CC">admin</span>
+            <span class="chip" style="background:#DCEFD2">listen</span>
+            <span class="chip" style="background:#DCEFD2">listen</span>
+            <span class="chip" style="background:#DCEFD2">class</span>
+            <span class="chip" style="background:#DCEFD2">class</span>
+            <span class="chip" style="background:#DCEFD2">class</span>
+            <span class="chip" style="background:#DCEFD2">allow</span>
+            <span class="chip" style="background:#E7DEF9">oper</span>
+            <span class="chip" style="background:#CFE4F0">link</span>
+            <span class="chip" style="background:#EFE7CE">set</span>
+            <span class="chip" style="background:#EFE7CE">set</span>
+          </div>
+        </div>
+
+        <div class="fileblk">
+          <div class="fn">▾ opers.conf <span class="c">3</span></div>
+          <div class="chips">
+            <span class="chip" style="background:#E7DEF9">oper bobsmith</span>
+            <span class="chip" style="background:#E7DEF9">oper alice</span>
+            <span class="chip" style="background:#E7DEF9">operclass</span>
+          </div>
+        </div>
+
+        <div class="fileblk">
+          <div class="fn">▾ network.conf <span class="c">5</span></div>
+          <div class="chips">
+            <span class="chip on" style="background:#F7D8DC">security-group</span>
+            <span class="chip" style="background:#F7D8DC">set::anti-flood</span>
+            <span class="chip" style="background:#F7D8DC">blacklist</span>
+            <span class="chip" style="background:#CFE4F0">ulines</span>
+            <span class="chip" style="background:#CFE4F0">link</span>
+          </div>
+        </div>
+
+        <div class="fileblk">
+          <div class="fn">▾ spamfilter.conf <span class="c">7</span></div>
+          <div class="chips">
+            <span class="chip" style="background:#F7D8DC">spamfilter</span>
+            <span class="chip" style="background:#F7D8DC">spamfilter</span>
+            <span class="chip" style="background:#F7D8DC">spamfilter</span>
+            <span class="chip" style="background:#F7D8DC">+4</span>
+          </div>
+        </div>
+
+        <div class="fileblk" style="opacity:.6">
+          <div class="fn">▸ help/ · aliases/ · examples/ <span class="c">14</span></div>
+        </div>
+      </div>
+
+      <div class="main">
+        <div class="crumb">network.conf › security-group › trusted-bots</div>
+        <div class="title">
+          <span class="ic" style="background:#F7D8DC">★</span>
+          <div><h4>trusted-bots</h4><div class="sub">security-group trusted-bots { }</div></div>
+        </div>
+
+        <div class="fields">
+          <div class="fl"><span class="k">How important this group is</span><span class="v">priority 50</span>
+            <span class="h">Lower wins. known-users is 100, so this beats it.</span></div>
+          <div class="fl"><span class="k">Shown to users in ban lists</span><span class="v">public — no</span>
+            <span class="h">Default. Keeps custom group names off /MODE +b lists.</span></div>
+        </div>
+
+        <div class="fl wide" style="background:transparent;border:0;padding:0">
+          <span class="k" style="font-size:10px;color:#66766E;margin-bottom:5px;display:block">Match anyone who fits ANY of these</span>
+          <div class="crits">
+            <div class="crit"><span class="k">account</span><span class="d">Their services account is one of these</span><span class="v">Bot1, Bot2</span></div>
+            <div class="crit"><span class="k">identified</span><span class="d">They are logged in to services</span><span class="v">yes</span></div>
+            <div class="crit" style="background:#FDF3F4;border-color:#EDD3D6"><span class="k">exclude-webirc</span><span class="d">…but never if they came via a web gateway</span><span class="v" style="background:#F7DEE1">yes</span></div>
+            <div class="crit" style="border-style:dashed;color:#8FA096"><span class="k">+ criterion</span><span class="d">ip · certfp · country · asn · connect-time · reputation-score · …</span><span class="v" style="background:transparent"></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="notes">
+    <div class="note"><span class="k">Identity</span><p>Colour is the only thing carrying block type in the map, and it does all the work — you see at a glance that <code>spamfilter.conf</code> is entirely anti-abuse pink and <code>opers.conf</code> entirely lilac.</p></div>
+    <div class="note"><span class="k">Moving things</span><p>Drag a chip from one file's group into another's. That is literally moving the block between files, and the map is the only place you need to look.</p></div>
+    <div class="note"><span class="k">The tree</span><p>The tree <em>is</em> the map — folders collapse into one row when you're not using them, and each file shows what's inside rather than just a name.</p></div>
+    <div class="note cost"><span class="k">What it costs</span><p>One block at a time on the right, so comparing two <code>class</code> blocks means clicking between them. The map is abstract until you learn the colours.</p></div>
+  </div>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section>
+  <div class="dhead">
+    <span class="dnum">05</span>
+    <h2>Workbench</h2>
+    <span class="spectrum">playful · spatial</span>
+  </div>
+  <p class="col">Blocks are objects on a pegboard and you arrange them where you like. Categories are regions you draw around a group — give them a colour, an icon, a description, and fold the whole region into a single tile. Files are trays along the bottom; drop a module into a tray to move it there. The most game-like, and the one with the most rope to hang itself with.</p>
+
+  <div class="frame">
+  <div class="mock d5">
+    <div class="top">
+      <span style="font-family:'Fredoka';font-size:14px;font-weight:600">🎊 Confetti</span>
+      <span style="font-family:var(--mono);font-size:10.5px;opacity:.6">/home/irc/unrealircd/conf</span>
+      <span style="flex:1"></span>
+      <span class="d1 btn" style="background:#fff;border:1px solid #D5CAB8;padding:4px 11px;border-radius:8px;font-weight:700;font-size:11px">⌗ Tidy up</span>
+      <span class="d1 btn" style="background:#332C24;color:#fff;padding:4px 11px;border-radius:8px;font-weight:700;font-size:11px">+ Add block</span>
+    </div>
+
+    <div class="board">
+      <div class="region" style="left:14px;top:16px;width:394px;background:rgba(224,145,63,.09);border-color:rgba(224,145,63,.4)">
+        <span class="rtab" style="background:#F6CFA6"><span class="ic">⌂</span>Identity</span>
+        <span class="rdesc">who this server says it is</span>
+        <div style="display:flex;gap:10px">
+          <div class="mod">
+            <div class="bar" style="background:#F6CFA6">me</div>
+            <div class="in"><span class="lb">This server</span>
+              <span class="kv">name <b>irc.example.com</b></span>
+              <span class="kv">sid <b>001</b></span></div>
+          </div>
+          <div class="mod">
+            <div class="bar" style="background:#F6CFA6">admin</div>
+            <div class="in"><span class="lb">Contact</span>
+              <span class="kv">lines <b>3</b></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="region" style="left:428px;top:16px;width:376px;background:rgba(125,187,107,.09);border-color:rgba(125,187,107,.42)">
+        <span class="rtab" style="background:#CDE8BE"><span class="ic">⚿</span>Doors &amp; limits</span>
+        <span class="rdesc">ports, and how hard people may push</span>
+        <div style="display:flex;gap:10px">
+          <div class="mod">
+            <div class="bar" style="background:#CDE8BE">listen</div>
+            <div class="in"><span class="lb">Port 6697</span>
+              <span class="kv">tls <b>yes</b></span>
+              <span class="port"><i></i>uses class <b style="color:#332C24">clients</b></span></div>
+          </div>
+          <div class="mod">
+            <div class="bar" style="background:#CDE8BE">class</div>
+            <div class="in"><span class="lb">clients</span>
+              <span class="kv">sendq <b>200k</b></span>
+              <span class="kv">recvq <b>8000</b></span>
+              <span class="port"><i></i>used by 2 blocks</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="region" style="left:14px;top:216px;width:580px;background:rgba(212,112,124,.09);border-color:rgba(212,112,124,.42)">
+        <span class="rtab" style="background:#F3C6CB"><span class="ic">🛡</span>Anti-abuse</span>
+        <span class="rdesc">your region · spam, floods, who gets trusted</span>
+        <div style="display:flex;gap:10px">
+          <div class="mod">
+            <div class="bar" style="background:#F3C6CB">security-group</div>
+            <div class="in"><span class="lb">trusted-bots</span>
+              <span class="kv">priority <b>50</b></span>
+              <span class="kv">accounts <b>2</b></span></div>
+          </div>
+          <div class="mod">
+            <div class="bar" style="background:#F3C6CB">set::anti-flood</div>
+            <div class="in"><span class="lb">Flood limits</span>
+              <span class="kv">groups <b>3</b></span>
+              <span class="kv">limits <b>18</b></span></div>
+          </div>
+          <div class="mod" style="outline:2px solid #7B5EA7;outline-offset:2px">
+            <div class="bar" style="background:#F3C6CB">spamfilter</div>
+            <div class="in"><span class="lb">GTBot packet</span>
+              <span class="kv">action <b>gline</b></span>
+              <span class="kv">target <b>channel</b></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="position:absolute;left:616px;top:232px">
+        <div class="collapsed">
+          <span style="font-size:17px">📖</span>
+          <span><span class="n">Aliases</span><br><span class="c">9 blocks · folded</span></span>
+        </div>
+        <div class="collapsed" style="margin-top:9px">
+          <span style="font-size:17px">🗝</span>
+          <span><span class="n">Your staff</span><br><span class="c">4 blocks · folded</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="trays">
+      <div class="tray"><div class="n">unrealircd.conf</div><div class="c">12 blocks</div></div>
+      <div class="tray"><div class="n">opers.conf</div><div class="c">3 blocks</div></div>
+      <div class="tray hot"><div class="n">network.conf</div><div class="c">drop to move here</div></div>
+      <div class="tray"><div class="n">spamfilter.conf</div><div class="c">7 blocks</div></div>
+      <div class="tray" style="flex:0 0 90px;text-align:center"><div class="n">help/</div><div class="c">1</div></div>
+      <div class="tray" style="flex:0 0 90px;text-align:center"><div class="n">aliases/</div><div class="c">9</div></div>
+    </div>
+  </div>
+  </div>
+
+  <div class="notes">
+    <div class="note"><span class="k">Identity</span><p>Every module wears its type as a coloured header bar with the real directive name in it, and references between blocks show as little ports — <code>listen</code> saying it uses class <code>clients</code>.</p></div>
+    <div class="note"><span class="k">Moving things</span><p>Drag anywhere. Into a region to categorise, into a tray to change file. Regions fold to a tile, shown right: <em>Aliases, 9 blocks, folded</em>.</p></div>
+    <div class="note"><span class="k">The tree</span><p>The trays along the bottom are the tree, flattened to drop targets. Folders become trays too. A full tree stays available for files you're not currently arranging.</p></div>
+    <div class="note cost"><span class="k">What it costs</span><p>Someone has to do the arranging, and a 27-block config needs a "tidy up" button to stay sane. It's also the one most at risk of reading as unserious to an expert.</p></div>
+  </div>
+</section>
+
+<!-- ==================== compare ==================== -->
+<section>
+  <h2>Side by side</h2>
+  <div class="cmpwrap">
+  <table class="cmp">
+    <thead><tr><th></th><th>Best at</th><th>Whole config at once?</th><th>Moving blocks</th><th>Risk</th></tr></thead>
+    <tbody>
+      <tr><td><b>Board</b></td><td>Reorganising, and seeing a category as a set</td><td>No — one category per column</td><td>The whole metaphor</td><td>Deep settings need a separate panel</td></tr>
+      <tr><td><b>Folio</b></td><td>Warmth, and knowing what a block is instantly</td><td>No — cards are big</td><td>Drag to band or tab</td><td>Least dense; smallest leap from what exists</td></tr>
+      <tr><td><b>Console</b></td><td>Speed, scale, and expert trust</td><td>Yes, comfortably</td><td>Keyboard and command bar</td><td>Abandons the cozy identity</td></tr>
+      <tr><td><b>Atlas</b></td><td>Never losing your place across files</td><td>Yes, as a map</td><td>Drag a chip between files</td><td>One block at a time on the right</td></tr>
+      <tr><td><b>Workbench</b></td><td>Spatial memory and arranging</td><td>Yes, if you arrange it so</td><td>Drag anywhere</td><td>Manual tidying; may read as a toy</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="notes" style="margin-top:26px">
+    <div class="note" style="grid-column:1/-1"><span class="k">Worth saying</span>
+      <p style="font-size:.92rem">These aren't exclusive. <b>Console</b>'s density and <b>Folio</b>'s warmth could be one app with a density switch — the same data, two skins. And whichever wins, the folder discovery, the add/move/reorder commands and the user-defined categories are the same work underneath; only the surface differs. If two of these appeal for different reasons, say which parts and I'll draw the hybrid rather than making you pick a whole one.</p></div>
+  </div>
+</section>
+
+<footer>Five directions for Confetti · mockups only, nothing wired up · sample data throughout</footer>
+
+</div>
+</body>
+</html>
